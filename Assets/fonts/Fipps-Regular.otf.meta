@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 0f4cb29352ddd354485bf76c77e71b94
+timeCreated: 1500126410
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Fipps
+  fontNames:
+  - Fipps
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

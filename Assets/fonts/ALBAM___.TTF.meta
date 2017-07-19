@@ -1,0 +1,21 @@
+fileFormatVersion: 2
+guid: 81c96933a26e16b4284f3fd4644baaaf
+timeCreated: 1500126532
+licenseType: Free
+TrueTypeFontImporter:
+  serializedVersion: 4
+  fontSize: 16
+  forceTextureCase: -2
+  characterSpacing: 0
+  characterPadding: 1
+  includeFontData: 1
+  fontName: Alba Matter
+  fontNames:
+  - Alba Matter
+  fallbackFontReferences: []
+  customCharacters: 
+  fontRenderingMode: 0
+  ascentCalculationMode: 1
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
