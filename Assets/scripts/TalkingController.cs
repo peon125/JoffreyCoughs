@@ -10,7 +10,6 @@ public class TalkingController : UiElement
     public Image spriteRenderer;
     public Text text;
     public float speed, waitTime;
-    public Person speaker;
     public float arrowFrequency;
     bool doSpeak = false;
     public int limit;
@@ -103,7 +102,9 @@ public class TalkingController : UiElement
 
                 if (!doSpeak && restOfQuestion == "")
                 {
-                    StartCoroutine(CloseDialogue());
+                    Player._instance.EndOfTalk(target);
+
+                    StartCoroutine(CloseDialogue(""));
                     return;
                 }
             }
@@ -129,7 +130,7 @@ public class TalkingController : UiElement
             restOfQuestion = "";
     }
 
-    public void LetsTalk(string s)
+    public void StartTalking(string s)
     {
         StartCoroutine(OpenDialogue(s));
         target = Player._instance.target;
@@ -148,5 +149,25 @@ public class TalkingController : UiElement
         way = 0;
 
         Say(s);
+    }
+
+    protected IEnumerator CloseDialogue(string s)
+    {
+        way = -1;
+
+        yield return new WaitForSeconds(timeToWait);
+
+        Open(false);
+
+        stuff[1].transform.localPosition = new Vector3(
+            stuff[1].transform.localPosition.x,
+            yStart,
+            stuff[1].transform.localPosition.z
+        );
+
+        text.text = s;
+
+        Player._instance.isBusy = false;
+        way = 0;
     }
 }

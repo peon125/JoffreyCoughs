@@ -3,33 +3,44 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public class Player : MonoBehaviour 
+public delegate void ShootingEnded(Person winner, Person looser, Gun playersGun);
+public delegate void TradeEnded(Person trader, List<Item> boughtItems, int spentMoney);
+public delegate void InspectionEnded(Person inspected);
+public delegate void TalkEnded(Person speaker);
+
+public class Player : Person 
 {
     public static Player _instance;
+
+    public event ShootingEnded shootingEnded;
+    public event TradeEnded tradeEnded;
+    public event InspectionEnded inspectionEnded;
+    public event TalkEnded talkEnded;
 
     public TradingController tradingController;
     public InspectingController inspectingController;
     public TalkingController talkingController;
     public ShootingController shootingController;
+    public QuestHandler quests;
 
-    public List<Item> items;
-    public Gun gun;
-    public int cash;
+//    public List<Item> items;
+//    public Gun gun;
+//    public int cash;
 
     public Transform enemies;
     public float radius;
-    public bool isBusy;
+//    public bool isBusy;
     public Person target;
-    public float speed;
+//    public float speed;
 
-    public Sprite[] moveSprites;
-    public float moveSpriteSpeed;
-    float moveSpriteTimer = 0f;
-    int moveI = 0;
+//    public Sprite[] moveSprites;
+//    public float moveSpriteSpeed;
+//    float moveSpriteTimer = 0f;
+//    int moveI = 0;
 
-    public Transform heartsSpawn;
-    public GameObject heartPrefab;
-    public int hp;
+//    public Transform heartsSpawn;
+//    public GameObject heartPrefab;
+//    public int hp;
 
     public Transform feedTransform;
     public GameObject feedPrefab;
@@ -39,7 +50,6 @@ public class Player : MonoBehaviour
 
     List<Transform> nearbyObjects = new List<Transform>();
     Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
-    Rigidbody2D rb; 
 
     void Awake()
     {
@@ -113,16 +123,16 @@ public class Player : MonoBehaviour
             if (target != null)
             {
                 if (Input.GetButtonDown("Challenge"))
-                    shootingController.ShallWeBegin(target);
+                    target.LetsShoot();
 
                 if (Input.GetButtonDown("Talk"))
-                    talkingController.LetsTalk(target.thingToSay);
+                    target.LetsTalk();
 
                 if (Input.GetButtonDown("Trade"))
-                    tradingController.LetsTrade();
+                    target.LetsTrade();
 
                 if (Input.GetButtonDown("Inspect"))
-                    inspectingController.LetsSee();
+                    target.LetsSee();
             }
         }
         else
@@ -271,5 +281,29 @@ public class Player : MonoBehaviour
         {
             shootingController.ShootoutOver(gameObject);
         }
+    }
+
+    public void EndOfShooting(Person winner, Person looser, Gun playersGun)
+    {
+        if (shootingEnded != null)
+            shootingEnded(winner, looser, playersGun);
+    }
+
+    public void EndOfTrade(Person trader, List<Item> boughtItems, int spentMoney)
+    {
+        if (tradeEnded != null)
+            tradeEnded(trader, boughtItems, spentMoney);
+    }
+
+    public void EndOfInspection(Person inspected)
+    {
+        if (inspectionEnded != null)
+            inspectionEnded(inspected);
+    }
+
+    public void EndOfTalk(Person speaker)
+    {
+        if (talkEnded != null)
+            talkEnded(speaker);
     }
 }

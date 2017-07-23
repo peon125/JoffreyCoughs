@@ -6,7 +6,7 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{EFE59609-66DE-3A54-8F81-D533B69E9503}</ProjectGuid>
+    <ProjectGuid>{A7497137-527A-D051-A8D1-DB49DC48D391}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp</AssemblyName>
@@ -58,9 +58,13 @@
      <Compile Include="Assets\scripts\Player.cs" />
      <Compile Include="Assets\scripts\ShootingController.cs" />
      <Compile Include="Assets\scripts\Square.cs" />
+     <Compile Include="Assets\scripts\Talking.cs" />
      <Compile Include="Assets\scripts\TalkingController.cs" />
      <Compile Include="Assets\scripts\TradingController.cs" />
      <Compile Include="Assets\scripts\UiElement.cs" />
+     <Compile Include="Assets\scripts\quests\Quest.cs" />
+     <Compile Include="Assets\scripts\quests\QuestHandler.cs" />
+     <Compile Include="Assets\scripts\quests\TalkToAStranger.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>

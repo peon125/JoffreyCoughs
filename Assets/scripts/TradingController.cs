@@ -149,7 +149,7 @@ public class TradingController : UiElement
         }
     }
 
-    public void LetsTrade()
+    public void StartTrading()
     {
         StartCoroutine(OpenDialogue());
         target = Player._instance.target;

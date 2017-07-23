@@ -13,14 +13,16 @@ public class Person : MonoBehaviour
     public Gun gun;
     public int hp;
     public float distanceFromOrigin, speed, frequencyOfChangeDirection;
-    public bool isBusy;
+    public bool isBusy, canMove;
     public SpriteRenderer spriteRenderer;
     public string thingToSay;
+    public int tradePricesModifier;
+
     public Sprite[] moveSprites;
     public float moveSpriteSpeed;
-    public int tradePricesModifier;
-    float moveSpriteTimer = 0f, _moveSpriteSpeed;
-    int moveI = 0;
+    protected float moveSpriteTimer = 0f;
+    protected float _moveSpriteSpeed;
+    protected int moveI = 0;
 
     protected Vector3 previousPosition = Vector3.zero;
 
@@ -39,27 +41,32 @@ public class Person : MonoBehaviour
 
     protected void ChangeSprite()
     {
-        if (previousPosition.x != transform.position.x)
+        if (canMove)
         {
-            moveSpriteTimer += Time.deltaTime;
-
-            _moveSpriteSpeed = Mathf.Abs(rb.velocity.x) / moveSpriteSpeed;
-
-            if (moveSpriteTimer > _moveSpriteSpeed)
+            if (previousPosition.x != transform.position.x)
             {
-                moveI++;
-                moveI %= moveSprites.Length;
+                moveSpriteTimer += Time.deltaTime;
 
-                GetComponent<SpriteRenderer>().sprite = moveSprites[moveI];
+                _moveSpriteSpeed = 
+                Mathf.Abs(rb.velocity.x) /
+                moveSpriteSpeed;
 
-                moveSpriteTimer = 0f;
+                if (moveSpriteTimer > _moveSpriteSpeed)
+                {
+                    moveI++;
+                    moveI %= moveSprites.Length;
 
-                if (previousPosition.x - transform.position.x < 0)
-                    transform.eulerAngles = new Vector3(0, 0, 0);
-                else if (previousPosition.x - transform.position.x > 0)
-                    transform.eulerAngles = new Vector3(0, 180, 0);
+                    GetComponent<SpriteRenderer>().sprite = moveSprites[moveI];
 
-                previousPosition = transform.position;
+                    moveSpriteTimer = 0f;
+
+                    if (previousPosition.x - transform.position.x < 0)
+                        transform.eulerAngles = new Vector3(0, 0, 0);
+                    else if (previousPosition.x - transform.position.x > 0)
+                        transform.eulerAngles = new Vector3(0, 180, 0);
+
+                    previousPosition = transform.position;
+                }
             }
         }
     }
@@ -91,21 +98,24 @@ public class Person : MonoBehaviour
 
     protected void Move()
     {
-        float x = 0, y = 0;
-
-        x = Random.Range(-1f, 1f);
-        y = Random.Range(-1f, 1f);
-
-        if ((Vector3.Distance(startPos, transform.localPosition + new Vector3(x, y, 0) * speed) < distanceFromOrigin))
+        if (canMove)
         {
-            rb.velocity = new Vector2(
-                x,
-                y
-            ) * speed;
-        }
-        else
-        {
-            rb.velocity = Vector2.zero;
+            float x = 0, y = 0;
+
+            x = Random.Range(-1f, 1f);
+            y = Random.Range(-1f, 1f);
+
+            if ((Vector3.Distance(startPos, transform.localPosition + new Vector3(x, y, 0) * speed) < distanceFromOrigin))
+            {
+                rb.velocity = new Vector2(
+                    x,
+                    y
+                ) * speed;
+            }
+            else
+            {
+                rb.velocity = Vector2.zero;
+            }
         }
     }
 
@@ -133,5 +143,48 @@ public class Person : MonoBehaviour
         {
             Player._instance.shootingController.ShootoutOver(gameObject);
         }
+    }
+
+    public void LetsShoot()
+    {
+        Player._instance.shootingController.StartShooting(this);
+    }
+
+    public void LetsTalk()
+    {
+        Quest quest = Player._instance.quests.FindMyQuest(this);
+
+        if (quest != null)
+        {
+            quest.CheckOnQuest(this);
+        } 
+
+        Player._instance.talkingController.StartTalking(thingToSay);
+    }
+
+    public void LetsTrade()
+    {
+        Player._instance.tradingController.StartTrading();
+    }
+
+    public void LetsSee()
+    {
+        Player._instance.inspectingController.StartInspecting();
+    }
+
+    public void IAmGivingQuest<T>(bool b)
+    {
+        if (b)
+            GetComponent<SpriteRenderer>().color = Color.yellow;
+        else
+            GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    public void IAmReceivingQuest<T>(bool b)
+    {
+        if (b)
+            GetComponent<SpriteRenderer>().color = Color.blue;
+        else 
+            GetComponent<SpriteRenderer>().color = Color.white;
     }
 }

@@ -17,7 +17,7 @@ public class ShootingController : MonoBehaviour
     Player shootingPlayer;
     public Person shootingEnemy;
 
-    public void ShallWeBegin(Person enemy)
+    public void StartShooting(Person enemy)
     {
         Player._instance.PrepareToShootout();
         shootingEnemy = enemy;

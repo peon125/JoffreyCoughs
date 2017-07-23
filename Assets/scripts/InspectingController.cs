@@ -50,7 +50,7 @@ public class InspectingController : UiElement
             go.SetActive(b);
     }
 
-    public void LetsSee()
+    public void StartInspecting()
     {
         StartCoroutine(OpenDialogue());
         target = Player._instance.target;
