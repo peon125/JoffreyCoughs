@@ -5,6 +5,7 @@ using UnityEngine.UI;
 
 public class Counter : MonoBehaviour 
 {
+    public ShootingController shootingController;
     public GameObject[] stuffToDisable;
     public Text counter;
     public float waitTime;
@@ -29,7 +30,7 @@ public class Counter : MonoBehaviour
             foreach (GameObject go in stuffToDisable)
                 go.SetActive(true);
 
-            ShootingController._instance.PermissionWasGiven();
+            shootingController.PermissionWasGiven();
 
             timer = waitTime;
 

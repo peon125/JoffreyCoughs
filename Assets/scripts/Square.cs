@@ -22,16 +22,16 @@ public class Square : MonoBehaviour
         do
         {
             expectedKey = Keys.RandomKey();
-        } while(ShootingController._instance.takenKeys.Contains(expectedKey));
+        } while(Player._instance.shootingController.takenKeys.Contains(expectedKey));
 
-        ShootingController._instance.takenKeys.Add(expectedKey);
+        Player._instance.shootingController.takenKeys.Add(expectedKey);
         key.text = expectedKey.ToString();
     }
 
     void Update()
     {
         if (Input.GetKeyDown(expectedKey))
-            ShotHit(1);
+            ShotHit(Player._instance.gun.damage);
         else if (Input.anyKeyDown)
             DealDamage();
 
@@ -48,6 +48,11 @@ public class Square : MonoBehaviour
 	
     public void ShotHit(int damage)
     {
+        float chance = Random.Range(0f, 1f);
+
+        if (chance > Player._instance.gun.accuracy)
+            return;
+
         hp -= damage;
 
         hpCounter.text = hp.ToString();
@@ -55,14 +60,14 @@ public class Square : MonoBehaviour
         if (hp <= 0)
         {
             DestroyTheSquare();
-            ShootingController._instance.shootingEnemy.DamageTaken();
+            Player._instance.shootingController.shootingEnemy.DamageTaken();
         }
     }
 
     void DestroyTheSquare()
     {
-        ShootingController._instance.takenKeys.Remove(expectedKey);
-        ShootingController._instance.SquareDestroyed(transform);
+        Player._instance.shootingController.takenKeys.Remove(expectedKey);
+        Player._instance.shootingController.SquareDestroyed(transform);
         Destroy(gameObject);
     }
 

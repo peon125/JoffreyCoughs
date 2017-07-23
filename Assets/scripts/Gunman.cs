@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Enemy : Person 
+public class Gunman : Person 
 {
     void Update()
     {
         if (!isBusy && doMove)
         {
+            ChangeSprite();
+
             moveTimer += Time.deltaTime;
 
             if (moveTimer >= frequencyOfChangeDirection)
@@ -19,16 +21,16 @@ public class Enemy : Person
         }
         else
             rb.velocity = Vector2.zero;
+        
+        if (isBusy)
+        {
+            rb.velocity = Vector3.zero;
+        }
 
-        if (iAmBeingMarkedTimer > 0)
-        {
-            iAmBeingMarkedTimer -= Time.deltaTime;
-            OhCrapAmIMarked(true);
-        }
-        else
-        {
-            OhCrapAmIMarked(false);
-        }
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.y / 10000
+        );
     }
-
 }

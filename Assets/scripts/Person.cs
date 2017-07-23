@@ -4,30 +4,68 @@ using UnityEngine;
 
 public class Person : MonoBehaviour 
 {
-    public GameObject heartPrefab;
+    public string _name, description;
+    public List<Item> items;
+    public int cash;
+    public GameObject heartPrefab, markPrefab;
     public Transform heartsSpawn;
+    public Sprite speakerSprite;
     public Gun gun;
     public int hp;
     public float distanceFromOrigin, speed, frequencyOfChangeDirection;
     public bool isBusy;
     public SpriteRenderer spriteRenderer;
-    public float iAmBeingMarkedTimer = 0f;
+    public string thingToSay;
+    public Sprite[] moveSprites;
+    public float moveSpriteSpeed;
+    public int tradePricesModifier;
+    float moveSpriteTimer = 0f, _moveSpriteSpeed;
+    int moveI = 0;
+
+    protected Vector3 previousPosition = Vector3.zero;
 
     protected Vector3 startPos;
     protected float moveTimer = 0f;
     protected Rigidbody2D rb;
     protected bool doMove = true;
+    protected GameObject mark;
 
     void Start() 
     {
+        _moveSpriteSpeed = moveSpriteSpeed;
         startPos = transform.localPosition;
         rb = GetComponent<Rigidbody2D>();
     }
 
+    protected void ChangeSprite()
+    {
+        if (previousPosition.x != transform.position.x)
+        {
+            moveSpriteTimer += Time.deltaTime;
+
+            _moveSpriteSpeed = Mathf.Abs(rb.velocity.x) / moveSpriteSpeed;
+
+            if (moveSpriteTimer > _moveSpriteSpeed)
+            {
+                moveI++;
+                moveI %= moveSprites.Length;
+
+                GetComponent<SpriteRenderer>().sprite = moveSprites[moveI];
+
+                moveSpriteTimer = 0f;
+
+                if (previousPosition.x - transform.position.x < 0)
+                    transform.eulerAngles = new Vector3(0, 0, 0);
+                else if (previousPosition.x - transform.position.x > 0)
+                    transform.eulerAngles = new Vector3(0, 180, 0);
+
+                previousPosition = transform.position;
+            }
+        }
+    }
+
     public  void PrepareToShootout()
     {
-        //spriteRenderer.enabled = false;
-
         for (int i = 0; i < hp; i++)
         {
             Vector2 pos = new Vector2(
@@ -86,23 +124,6 @@ public class Person : MonoBehaviour
             doMove = true;
     }
 
-    public void OhCrapAmIMarked(bool b)
-    {
-        if (b)
-        {
-            GetComponent<SpriteRenderer>().color = Color.white;
-            Player._instance.target = this;
-        }
-        else
-        {
-            GetComponent<SpriteRenderer>().color = Color.red;
-            if (Player._instance.target == this)
-                Player._instance.target = null;
-
-        }
-    }
-
-
     public void DamageTaken()
     {
         Destroy(heartsSpawn.GetChild(0).gameObject);
@@ -110,7 +131,7 @@ public class Person : MonoBehaviour
 
         if (hp <= 0)
         {
-            ShootingController._instance.ShootoutOver(gameObject);
+            Player._instance.shootingController.ShootoutOver(gameObject);
         }
     }
 }

@@ -1,10 +1,18 @@
 fileFormatVersion: 2
 guid: 0f1352131f64f8f4d881fc6a47bf7c93
-timeCreated: 1500378924
+timeCreated: 1500550218
 licenseType: Free
 MonoImporter:
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - heartPrefab: {fileID: 1662868688450538, guid: a6e504ac1531fe34bb1203e1e0d122be,
+      type: 2}
+  - markPrefab: {fileID: 1472694252585810, guid: f10e35bb9a824f344afe3e9c08cc7afd,
+      type: 2}
+  - heartsSpawn: {instanceID: 0}
+  - speakerSprite: {instanceID: 0}
+  - gun: {instanceID: 0}
+  - spriteRenderer: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

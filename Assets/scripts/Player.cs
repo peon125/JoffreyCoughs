@@ -6,22 +6,40 @@ using System;
 public class Player : MonoBehaviour 
 {
     public static Player _instance;
-    public Talking talking;
-    public Gun gun;
-    public GameObject heartPrefab, arrow;
-    public Transform heartsSpawn;
-    public int hp;
-    public bool isBusy;
-    public SpriteRenderer spriteRenderer;
-    public Person target;
 
-    public float x = 0, y = 0;
+    public TradingController tradingController;
+    public InspectingController inspectingController;
+    public TalkingController talkingController;
+    public ShootingController shootingController;
+
+    public List<Item> items;
+    public Gun gun;
+    public int cash;
+
+    public Transform enemies;
+    public float radius;
+    public bool isBusy;
+    public Person target;
     public float speed;
+
+    public Sprite[] moveSprites;
+    public float moveSpriteSpeed;
+    float moveSpriteTimer = 0f;
+    int moveI = 0;
+
+    public Transform heartsSpawn;
+    public GameObject heartPrefab;
+    public int hp;
+
+    public Transform feedTransform;
+    public GameObject feedPrefab;
+    public int feed;
+    public float feedTime;
+    float feedTimer;
+
+    List<Transform> nearbyObjects = new List<Transform>();
     Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
-    //bool moving = false;
-    //float arrowTimer = 0f;
     Rigidbody2D rb; 
-    Vector3 arrowOffset = new Vector3(0, 2.8f, 0);
 
     void Awake()
     {
@@ -31,10 +49,22 @@ public class Player : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+
+        for (int i = 0; i < hp; i++)
+        {
+            heartsSpawn.GetChild(i).gameObject.SetActive(true);
+        }
+
+        for (int i = 0; i < feed; i++)
+        {
+            feedTransform.GetChild(i).gameObject.SetActive(true);
+        }
     }
 
 	void Update()
     {
+        Feed();
+
 //        if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) || moving)
 //        {
 //            timer += Time.deltaTime;
@@ -70,40 +100,158 @@ public class Player : MonoBehaviour
 
         if (!isBusy)
         {
+            ChangeSprite();
+
             rb.velocity = new Vector2(
-                Input.GetAxis("Horizontal") * speed,
-                Input.GetAxis("Vertical") * speed
+                Input.GetAxis("Horizontal1") * speed,
+                Input.GetAxis("Vertical1") * speed
             );
 
-            ShowArrow(Input.GetButton("Aim"));
+            if (!isBusy)
+                LookingForTheNearestInteractiveObject();
 
-            if (Input.GetButtonDown("Challenge") && target != null)
-                ShootingController._instance.ShallWeBegin(target);
+            if (target != null)
+            {
+                if (Input.GetButtonDown("Challenge"))
+                    shootingController.ShallWeBegin(target);
 
-            if (Input.GetButtonDown("Talk") && !isBusy)
-                talking.Says("uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga uga buga");
+                if (Input.GetButtonDown("Talk"))
+                    talkingController.LetsTalk(target.thingToSay);
+
+                if (Input.GetButtonDown("Trade"))
+                    tradingController.LetsTrade();
+
+                if (Input.GetButtonDown("Inspect"))
+                    inspectingController.LetsSee();
+            }
         }
         else
             rb.velocity = Vector2.zero;
-	}   
+
+        transform.position = new Vector3(
+            transform.position.x,
+            transform.position.y,
+            transform.position.y / 10000
+        );
+	} 
+
+    void Feed()
+    {
+        feedTimer += Time.deltaTime;
+
+        if (feedTimer >= feedTime)
+        {
+            if (feed > 0)
+            {
+                feed--;
+
+                feedTimer = 0f;
+
+                feedTransform.GetChild(feedTransform.childCount - 1).gameObject.SetActive(false);
+            }
+            else
+                GoToHospital();
+        }
+    }
+
+    public void EatFood(int _i)
+    {
+        if (feed < 10)
+        {
+            feed += _i;
+
+            for (int i = 0; i < _i; i++)
+            {
+                feedTransform.GetChild(feedTransform.childCount).gameObject.SetActive(true);
+            }
+        }
+    }
+
+    public void DrinkAlkohol(int _i)
+    {
+        if (hp < 10)
+        {
+            hp += _i;
+
+            for (int i = 0; i < _i; i++)
+            {
+                heartsSpawn.GetChild(heartsSpawn.childCount).gameObject.SetActive(true);
+            }
+        }
+    }
+
+    void GoToHospital()
+    {
+        Start();
+    }
+
+    void ChangeSprite()
+    {
+        if (Input.GetAxis("Horizontal1") != 0 || Input.GetAxis("Vertical1") != 0)
+        {
+            moveSpriteTimer += Time.deltaTime;
+
+            if (moveSpriteTimer > moveSpriteSpeed)
+            {
+                moveI++;
+                moveI %= moveSprites.Length;
+
+                GetComponent<SpriteRenderer>().sprite = moveSprites[moveI];
+
+                moveSpriteTimer = 0f;
+
+                if (Input.GetAxis("Horizontal1") > 0)
+                    transform.eulerAngles = new Vector3(0, 0, 0);
+                else if (Input.GetAxis("Horizontal1") < 0)
+                    transform.eulerAngles = new Vector3(0, 180, 0);
+            }
+        }
+    }
 
     public void PrepareToShootout()
     {
-        //spriteRenderer.enabled = false;
+        isBusy = true;
+    }
 
-        for (int i = 0; i < hp; i++)
+    void LookingForTheNearestInteractiveObject()
+    {
+        foreach (Transform enemy in enemies)
         {
-            Vector2 pos = new Vector2(
-                              i * (heartPrefab.GetComponent<RectTransform>().sizeDelta.y + 0),
-                              0               
-                          );
-
-            GameObject heart = Instantiate(heartPrefab, heartsSpawn) as GameObject;
-
-            heart.transform.localPosition = pos;
+            if (Vector3.Distance(enemy.position, transform.position) < radius)
+                nearbyObjects.Add(enemy);               
         }
 
-        isBusy = true;
+        if (nearbyObjects.Count != 0)
+        {
+            Transform nearest = nearbyObjects[0];
+
+            if (nearbyObjects.Count > 0)
+            {
+                for (int i = 1; i < nearbyObjects.Count; i++)
+                {
+                    if (Vector3.Distance(nearbyObjects[i].position, transform.position) < Vector3.Distance(nearest.position, transform.position))
+                        nearest = nearbyObjects[i];
+                }
+            }
+
+            if (target != nearest.GetComponent<Person>() && target != null)
+            {
+                target.GetComponent<SpriteRenderer>().color = Color.white;
+               
+            }
+            target = nearest.GetComponent<Person>();
+            target.GetComponent<SpriteRenderer>().color = Color.green;
+        }
+        else
+        {
+            if (target != null)
+            {
+                target.GetComponent<SpriteRenderer>().color = Color.white;
+                target = null;
+            }
+        }
+
+        nearbyObjects.Clear();
     }
 
     public void ShootoutOver()
@@ -114,50 +262,6 @@ public class Player : MonoBehaviour
             Destroy(heart.gameObject);
     }
 
-    void ShowArrow(bool b)
-    {
-        arrow.SetActive(b);
-
-        //arrowTimer += Time.deltaTime;
-
-        int h = 0, v = 0;
-        if (Input.GetAxis("Horizontal") > 0)
-            h = 1;
-        else if (Input.GetAxis("Horizontal") < 0)
-            h = -1;
-
-        if (Input.GetAxis("Vertical") > 0)
-            v = 1;
-        else if (Input.GetAxis("Vertical") < 0)
-            v = -1;
-
-        if (h != 0 || v != 0)
-            arrowOffset = new Vector3(h * 2.8f, v * 2.8f, 0);
-
-        if (Input.GetAxis("Horizontal") > 0 && Input.GetAxis("Vertical") > 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, -45);
-        else if (Input.GetAxis("Horizontal") > 0 && Input.GetAxis("Vertical") < 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, -135);
-        else if (Input.GetAxis("Horizontal") < 0 && Input.GetAxis("Vertical") < 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, -225);
-        else if (Input.GetAxis("Horizontal") < 0 && Input.GetAxis("Vertical") > 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, -315);
-        else if (Input.GetAxis("Horizontal") > 0 && Input.GetAxis("Vertical") == 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, 270);
-        else if (Input.GetAxis("Horizontal") < 0 && Input.GetAxis("Vertical") == 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, 90);
-        else if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") > 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, 0);
-        else if (Input.GetAxis("Horizontal") == 0 && Input.GetAxis("Vertical") < 0)
-            arrow.transform.eulerAngles = new Vector3(0, 0, 180);
-
-        if (b)
-        {
-
-            arrow.transform.position = transform.position + arrowOffset;
-        }
-    }
-
     public void DamageTaken()
     {
         Destroy(heartsSpawn.GetChild(heartsSpawn.childCount - 1).gameObject);
@@ -165,11 +269,7 @@ public class Player : MonoBehaviour
 
         if (hp <= 0)
         {
-            //UnityEngine.SceneManagement.SceneManager.LoadScene(Application.loadedLevel);
-
-            ShootingController._instance.ShootoutOver(gameObject);
+            shootingController.ShootoutOver(gameObject);
         }
     }
-
-
 }

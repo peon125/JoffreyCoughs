@@ -4,7 +4,6 @@ using UnityEngine;
 
 public class ShootingController : MonoBehaviour
 {
-    public static ShootingController _instance;
     public List<KeyCode> takenKeys = new List<KeyCode>();
     public GameObject squarePrefab;
     public Transform squareSpawn;
@@ -17,11 +16,6 @@ public class ShootingController : MonoBehaviour
     List<int> takenCordsY;
     Player shootingPlayer;
     public Person shootingEnemy;
-
-    void Awake()
-    {
-        _instance = this;
-    }
 
     public void ShallWeBegin(Person enemy)
     {
@@ -99,6 +93,9 @@ public class ShootingController : MonoBehaviour
 
         Player._instance.ShootoutOver();
 
-        Destroy(haHaLooser);
+        if (haHaLooser == shootingEnemy)
+            Destroy(haHaLooser);
+        else
+            Debug.Log("przypal xD");
     }
 }

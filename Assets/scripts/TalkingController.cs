@@ -1,0 +1,152 @@
+﻿using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+using UnityEngine.UI;
+
+public class TalkingController : UiElement 
+{
+    public static TalkingController _instance;
+    public GameObject arrow;
+    public Image spriteRenderer;
+    public Text text;
+    public float speed, waitTime;
+    public Person speaker;
+    public float arrowFrequency;
+    bool doSpeak = false;
+    public int limit;
+    float timer = 0f, arrowTimer = 0f;
+    string question, restOfQuestion;
+
+    void Awake()
+    {
+        _instance = this;
+    }
+
+    void Update()
+    {
+        MoveObjects();
+
+        Speaking();
+
+        FlashingArrow();
+
+        KeyHandling();
+    }
+
+    void Speaking()
+    {
+        if (doSpeak)
+        {
+            timer += Time.deltaTime;
+
+            if (timer > speed)
+            {
+                text.text += question.Substring(text.text.Length, 1);
+                timer = 0;
+
+                if (text.text.Length == limit || (limit > question.Length && text.text.Length == question.Length))
+                {
+                    doSpeak = false;
+                }
+            }
+        }
+    }
+
+    void FlashingArrow()
+    {
+        if (restOfQuestion != "")
+        {
+            arrow.SetActive(true);
+
+            arrowTimer += Time.deltaTime;
+
+            if (arrowTimer >= arrowFrequency/2)
+            {
+                arrow.SetActive(true);
+            }
+            else if( arrowTimer <= arrowFrequency/2)
+            {
+                arrow.SetActive(false);
+            }
+
+            if(arrowTimer >= arrowFrequency)
+                arrowTimer = 0f;
+        }
+        else
+        {
+            arrow.SetActive(false);
+            arrowTimer = 0f;
+        }
+    }
+
+    void KeyHandling()
+    {
+        if (opened && way == 0)
+        {
+            if (Input.anyKeyDown)
+            {
+                if (!doSpeak && restOfQuestion != "")
+                {
+                    Say(restOfQuestion);
+                    return;
+                }
+
+                if (doSpeak)
+                {
+                    if (question.Length >= limit)
+                        text.text = question.Substring(0, limit);
+                    else
+                        text.text = question;
+                    doSpeak = false;
+                    return;
+                }
+
+                if (!doSpeak && restOfQuestion == "")
+                {
+                    StartCoroutine(CloseDialogue());
+                    return;
+                }
+            }
+        }
+    }
+
+    public void Say(string question)
+    {
+        this.question = question;
+
+        doSpeak = true;
+
+        text.text = "";
+
+
+        if (question.Length > limit)
+        {
+            restOfQuestion = question.Substring(limit);
+
+            question = question.Substring(0, limit);
+        }
+        else
+            restOfQuestion = "";
+    }
+
+    public void LetsTalk(string s)
+    {
+        StartCoroutine(OpenDialogue(s));
+        target = Player._instance.target;
+        spriteRenderer.sprite = target.speakerSprite;
+    }
+
+    IEnumerator OpenDialogue(string s)
+    {
+        Open(true);
+        way = 1;
+
+        Player._instance.isBusy = true;
+
+        yield return new WaitForSeconds(timeToWait);
+
+        way = 0;
+
+        Say(s);
+    }
+}

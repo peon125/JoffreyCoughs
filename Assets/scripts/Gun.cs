@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Gun : MonoBehaviour 
+public class Gun : Item 
 {
     public int hands, damage;
-    public float speed;
+    public float speed, accuracy;
 }
