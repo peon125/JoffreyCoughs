@@ -29,17 +29,22 @@ public class TalkToAStranger : Quest
             person.thingToSay = thingsToSay[0];
             ActivateTheQuest();
             questStadium = 1;
+            questTrackContent = whatToPutIntoQuestTrack[0];
         }
         else if (onQuest && completedObjectives != allObjectives)
         {
             person.thingToSay = thingsToSay[1];
             questStadium = 2;
+
         }
         else if (onQuest && completedObjectives == allObjectives)
         {
             person.thingToSay = thingsToSay[2];
+            Player._instance.questsController.completedQuests.Add(this);
             Player._instance.questsController.activatedQuests.Remove(this);
             Player._instance.items.Add(reward.GetComponent<Gun>());
+            if (Player._instance.questsController.trackedQuest == this)
+                Player._instance.questsController.SetTrackerActive(false);
             onQuest = false;
             questStadium = 3;
         }
@@ -61,5 +66,11 @@ public class TalkToAStranger : Quest
     void QuestCompleted()
     {
         Player._instance.talkEnded -= CheckIfObjectiveIsCompleted;
+        questTrackContent = whatToPutIntoQuestTrack[1];
+
+        if (Player._instance.questsController.trackedQuest == this)
+            Player._instance.questsController.UpdateTracker();
+        
+
     }
 }

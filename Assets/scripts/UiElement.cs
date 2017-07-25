@@ -13,21 +13,24 @@ public class UiElement : MonoBehaviour
     protected bool opened = false;
     protected Person target;
 
-    protected void MoveObjects()
+    public static void MoveObjects(GameObject gameObject, int way, float min, float max, float time)
     {
         if (way != 0)
         {
-            stuff[1].transform.localPosition += new Vector3(
+            gameObject.transform.localPosition += new Vector3(
                 0,
-                way * (Mathf.Abs(yStart + yEnd) / timeToWait) * Time.deltaTime,
+                way * (Mathf.Abs(min + max) / time) * Time.deltaTime,
                 0
             );
 
-            stuff[1].transform.localPosition = new Vector3(
-                stuff[1].transform.localPosition.x,
-                Mathf.Clamp(stuff[1].transform.localPosition.y, yStart, yEnd),
-                stuff[1].transform.localPosition.z
+            gameObject.transform.localPosition = new Vector3(
+                gameObject.transform.localPosition.x,
+                Mathf.Clamp(gameObject.transform.localPosition.y, min, max),
+                gameObject.transform.localPosition.z
             );
+
+//            if (gameObject.transform.localPosition.y >= max || gameObject.transform.localPosition.y <= min)
+//                way = 0;
         }
     }
 

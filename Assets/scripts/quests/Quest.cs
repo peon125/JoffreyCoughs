@@ -12,8 +12,10 @@ public abstract class Quest : MonoBehaviour
     public int completedObjectives;
     public string[] thingsToSay;
     public bool[] whatGoesToQuestLog;
+    public string[] whatToPutIntoQuestTrack;
     public bool onQuest;
     public int questStadium = 0;
+    public string questTrackContent;
 
     public abstract void ActivateTheQuest();
 

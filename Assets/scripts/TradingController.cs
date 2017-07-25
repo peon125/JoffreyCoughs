@@ -29,7 +29,7 @@ public class TradingController : UiElement
 
     void Update()
     {
-        MoveObjects();
+        MoveObjects(stuff[1], way, yStart, yEnd, timeToWait);
 
         if (opened && way == 0)
         {

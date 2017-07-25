@@ -10,13 +10,21 @@ public class QuestsController : UiElement
     public Transform questsStatus, questsList, questsTransform;
     public Text questTitle, questReward, questDescription;
     public float scrollingSpeed;
+
+    public Text trackQuestName, trackQuestContent;
+    public RectTransform trackBackground;
+
     int left = 0, up = 0, right = 0;
     bool leftVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightVerticalAxisInUse = false;
     List<Quest> currentlyChoosedQuests = new List<Quest>();
 
+    public Quest trackedQuest = null;
+
     Vector3 questsListStartPos = new Vector3(), descripitonStartPos = new Vector3();
 
-    float questListLength = 317f, descriptionLength = 220f;
+    float questListLength = 317f, descriptionLength = 220f, trackerMin = 350, trackerMax = 600;
+
+    int trackerWay = 0;
 
     void Start()
     {
@@ -28,7 +36,9 @@ public class QuestsController : UiElement
 
     void Update()
     {
-        MoveObjects();
+        MoveObjects(stuff[1], way, yStart, yEnd, timeToWait);
+
+        MoveObjects(trackBackground.parent.gameObject, trackerWay, trackerMin, trackerMax, timeToWait);
 
         if (opened && way == 0)
         {
@@ -36,6 +46,21 @@ public class QuestsController : UiElement
             {
                 StartCoroutine(CloseDialogue());
                 UnshowQuests();
+            }
+
+            if (Input.GetKeyDown(KeyCode.F) && (up == 0))
+            {
+                if (trackedQuest != currentlyChoosedQuests[left])
+                {
+                    trackedQuest = currentlyChoosedQuests[left];
+                    UpdateTracker();
+                    SetTrackerActive(true);
+                }
+                else
+                {
+                    trackedQuest = null;
+                    SetTrackerActive(false);
+                }
             }
         }
 
@@ -73,8 +98,8 @@ public class QuestsController : UiElement
     {
         StartCoroutine(OpenDialogue());
 
-            ShowQuests();
-            ShowDetailsOfQuest();
+        ShowQuests();
+        ShowDetailsOfQuest();
     }
 
     void ShowQuests()
@@ -227,5 +252,24 @@ public class QuestsController : UiElement
             else
                 transform.GetChild(_i).GetComponent<Text>().color = unselectedColor;
         }
+    }
+
+    public void SetTrackerActive(bool b)
+    {
+        trackBackground.parent.gameObject.SetActive(b);
+        if (b)
+            trackerWay = -1;
+        else
+            trackerWay = 1;
+    }
+
+    public void UpdateTracker()
+    {
+        trackQuestName.text = trackedQuest.questName;
+        trackQuestContent.text = trackedQuest.questTrackContent;
+        trackBackground.sizeDelta = new Vector2(
+            trackBackground.sizeDelta.x,
+            trackQuestName.GetComponent<RectTransform>().sizeDelta.y + trackQuestContent.GetComponent<RectTransform>().sizeDelta.y + 40
+        );
     }
 }

@@ -29,9 +29,7 @@ public class Player : Person
 
     public Transform enemies;
     public float radius;
-//    public bool isBusy;
     public Person target;
-//    public float speed;
 
 //    public Sprite[] moveSprites;
 //    public float moveSpriteSpeed;

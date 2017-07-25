@@ -17,7 +17,7 @@ public class TalkingController : UiElement
 
     void Update()
     {
-        MoveObjects();
+        MoveObjects(stuff[1], way, yStart, yEnd, timeToWait);
 
         Speaking();
 
