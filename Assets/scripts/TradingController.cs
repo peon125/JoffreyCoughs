@@ -5,20 +5,26 @@ using UnityEngine.UI;
 
 public class TradingController : UiElement 
 {
-    public static TradingController _instance;
+    public GameObject itemListElementPrefab;
     public Image spriteRenderer;
     public Item[] allTradersItems, allPlayersItems;
-    public Color selectedColor, unselectedColor;
-    public Text tradersCash, playersCash;
+    //public Color selectedColor, unselectedColor;
+    public Text tradersCash, playersCash, tradersItemCounter, playersItemCounter;
     Item selectedTradersItem, selectedPlayersItem;
     int left = 0, right = 0;
     bool leftVerticalAxisInUse = false, rightVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightHorizontalAxisInUse = false;
 
     public Transform tradersList, playersList, tradersStats, playersStats;
 
-    void Awake()
+    Vector3 traderStartingPos, playerStartingPos;
+    public float diffrence;
+
+    void Start()
     {
-        _instance = this;
+        traderStartingPos = tradersList.transform.localPosition;
+        playerStartingPos = playersList.transform.localPosition;
+
+        //diffrence = tradersList.GetChild(1).transform.position.y - tradersList.GetChild(0).transform.position.y;
     }
 
     void Update()
@@ -27,8 +33,10 @@ public class TradingController : UiElement
 
         if (opened && way == 0)
         {
-            if (Input.GetButtonDown("Cancel"))
+            if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Trade"))
+            {
                 StartCoroutine(CloseDialogue());
+            }
         }
 
         if (opened)
@@ -112,6 +120,29 @@ public class TradingController : UiElement
         else
             rightVerticalAxisInUse = false;
 
+        if (tradersList.childCount > 7)
+        {
+            tradersList.localPosition = new Vector3(
+                tradersList.localPosition.x, 
+                Mathf.Clamp(traderStartingPos.y - diffrence * left, traderStartingPos.y, traderStartingPos.y - diffrence * (target.items.Count - 7)), 
+                tradersList.localPosition.z
+            );
+        }
+        else
+            tradersList.localPosition = traderStartingPos;
+
+        if (playersList.childCount > 7)
+        {
+            playersList.localPosition = new Vector3(
+                playersList.localPosition.x, 
+                Mathf.Clamp(playerStartingPos.y - diffrence * right, playerStartingPos.y, playerStartingPos.y - diffrence * (Player._instance.items.Count - 7)), 
+                playersList.localPosition.z
+            );
+        }
+        else
+            playersList.localPosition = playerStartingPos;
+        
+
         if (leftHorizontalAxisInUse || leftVerticalAxisInUse || rightHorizontalAxisInUse || rightVerticalAxisInUse || leftHorizontalAxisInUse)
         {
             TakeCareOfIteratorAndShowStats();
@@ -123,7 +154,11 @@ public class TradingController : UiElement
                 tradersList.GetChild(i).GetComponent<Text>().color = selectedColor;
             else
                 tradersList.GetChild(i).GetComponent<Text>().color = unselectedColor;
+        }
 
+
+        for (int i = 0; i < playersList.childCount; i++)
+        {
             if (i == right)
                 playersList.GetChild(i).GetComponent<Text>().color = selectedColor;
             else
@@ -131,7 +166,7 @@ public class TradingController : UiElement
         }
     }
 
-    void ViewStats(Item item, Transform transform, string[] names, float[] values, string slot, int value, int modifier)
+    void ViewStats(Item item, Transform transform, string[] names, float[] values, string slot, int value, float modifier)
     {
         transform.GetChild(4).GetChild(0).GetComponent<Text>().text = item.slot;
         transform.GetChild(5).GetChild(0).GetComponent<Text>().text = (item.value * modifier).ToString();
@@ -164,7 +199,10 @@ public class TradingController : UiElement
             left %= target.items.Count;
         else
             left = 8;
-        if (target.items.Count != 0)
+
+        tradersItemCounter.text = (left + 1).ToString() + "/" + target.items.Count.ToString();
+
+        if (target.items.Count != 0)    
             ViewStats(
                 target.items[left],
                 tradersStats, 
@@ -189,6 +227,9 @@ public class TradingController : UiElement
             right %= Player._instance.items.Count;
         else
             right = 8;
+
+        playersItemCounter.text = (right + 1) + "/" + Player._instance.items.Count;
+
         if (Player._instance.items.Count != 0)
             ViewStats(
                 Player._instance.items[right], 
@@ -213,25 +254,45 @@ public class TradingController : UiElement
 
     void ShowItems()
     {       
+        UnshowItems();
+
         for (int i = 0; i < target.items.Count; i++)
         {
-            tradersList.GetChild(i).GetComponent<Text>().text = target.items[i].itemName;
+            //tradersList.GetChild(i).GetComponent<Text>().text = target.items[i].itemName;
+            GameObject item = Instantiate(itemListElementPrefab, tradersList);
+
+            item.transform.localPosition = new Vector3(
+                itemListElementPrefab.transform.position.x, 
+                itemListElementPrefab.transform.position.y + diffrence * i, 
+                itemListElementPrefab.transform.position.z
+            );
+
+            item.GetComponent<Text>().text = target.items[i].itemName;
         }
 
         for (int i = 0; i < Player._instance.items.Count; i++)
         {
-            playersList.GetChild(i).GetComponent<Text>().text = Player._instance.items[i].itemName;
+            //playersList.GetChild(i).GetComponent<Text>().text = Player._instance.items[i].itemName;
+            GameObject item = Instantiate(itemListElementPrefab, playersList);
+
+            item.transform.localPosition = new Vector3(
+                itemListElementPrefab.transform.position.x, 
+                itemListElementPrefab.transform.position.y + diffrence * i, 
+                itemListElementPrefab.transform.position.z
+            );
+
+            item.GetComponent<Text>().text = Player._instance.items[i].itemName;
         }
 
-        for (int i = target.items.Count; i < tradersList.childCount; i++)
-        {
-            tradersList.GetChild(i).GetComponent<Text>().text = "----";
-        }
-
-        for (int i = Player._instance.items.Count; i < playersList.childCount; i++)
-        {
-            playersList.GetChild(i).GetComponent<Text>().text = "----";
-        }
+//        for (int i = target.items.Count; i < tradersList.childCount; i++)
+//        {
+//            tradersList.GetChild(i).GetComponent<Text>().text = "----";
+//        }
+//
+//        for (int i = Player._instance.items.Count; i < playersList.childCount; i++)
+//        {
+//            playersList.GetChild(i).GetComponent<Text>().text = "----";
+//        }
 
         tradersCash.text = target.cash.ToString();
         playersCash.text = Player._instance.cash.ToString();
@@ -239,17 +300,30 @@ public class TradingController : UiElement
         TakeCareOfIteratorAndShowStats();
     }
 
+    void UnshowItems()
+    {
+        foreach (Transform item in playersList)
+        {
+            Destroy(item.gameObject);
+        }
+
+        foreach (Transform item in tradersList)
+        {
+            Destroy(item.gameObject);
+        }
+    }
+
     void BuyItem()
     {
-        if (Player._instance.items.Count == 7 || target.items.Count == 0)
+        if (Player._instance.items.Count == Player._instance.maxNumberOfItems || target.items.Count == 0)
             return;
 
         // sprawdz czy na pewno chcesz
 
         if (Player._instance.cash - target.items[left].value >= 0 && target.cash + target.items[left].value <= 99999999)
         {
-            Player._instance.cash -= target.items[left].value * target.tradePricesModifier;
-            target.cash += target.items[left].value * target.tradePricesModifier;
+            Player._instance.cash -= Mathf.FloorToInt(target.items[left].value * target.tradePricesModifier);
+            target.cash += Mathf.FloorToInt(target.items[left].value * target.tradePricesModifier);
         }
         else
             return;
@@ -262,7 +336,7 @@ public class TradingController : UiElement
 
     void SellItem()
     {
-        if (target.items.Count == 7 || Player._instance.items.Count == 0)
+        if (target.items.Count == target.maxNumberOfItems || Player._instance.items.Count == 0)
             return;
 
         // sprawdz czy na pewno chcesz

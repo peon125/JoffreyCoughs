@@ -5,7 +5,6 @@ using UnityEngine.UI;
 
 public class TalkingController : UiElement 
 {
-    public static TalkingController _instance;
     public GameObject arrow;
     public Image spriteRenderer;
     public Text text;
@@ -15,11 +14,6 @@ public class TalkingController : UiElement
     public int limit;
     float timer = 0f, arrowTimer = 0f;
     string question, restOfQuestion;
-
-    void Awake()
-    {
-        _instance = this;
-    }
 
     void Update()
     {

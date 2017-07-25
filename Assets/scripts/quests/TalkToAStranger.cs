@@ -5,6 +5,7 @@ using UnityEngine;
 public class TalkToAStranger : Quest 
 {
     public Person fellaToSpeakWith;
+    public GameObject reward;
 
     public override void ActivateTheQuest()
     {
@@ -12,7 +13,7 @@ public class TalkToAStranger : Quest
 
         Player._instance.talkEnded += CheckIfObjectiveIsCompleted;
 
-        //dodać do listy
+        Player._instance.questsController.activatedQuests.Add(this);
     }
 
     void CheckIfObjectiveIsCompleted(Person speaker)
@@ -37,6 +38,8 @@ public class TalkToAStranger : Quest
         else if (onQuest && completedObjectives == allObjectives)
         {
             person.thingToSay = thingsToSay[2];
+            Player._instance.questsController.activatedQuests.Remove(this);
+            Player._instance.items.Add(reward.GetComponent<Gun>());
             onQuest = false;
             questStadium = 3;
         }

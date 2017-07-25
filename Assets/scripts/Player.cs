@@ -21,7 +21,7 @@ public class Player : Person
     public InspectingController inspectingController;
     public TalkingController talkingController;
     public ShootingController shootingController;
-    public QuestHandler quests;
+    public QuestsController questsController;
 
 //    public List<Item> items;
 //    public Gun gun;
@@ -134,9 +134,13 @@ public class Player : Person
                 if (Input.GetButtonDown("Inspect"))
                     target.LetsSee();
             }
+
+            if (Input.GetButtonDown("QuestLog"))
+                questsController.StatViewingQuests();
         }
         else
             rb.velocity = Vector2.zero;
+
 
         transform.position = new Vector3(
             transform.position.x,
@@ -179,11 +183,20 @@ public class Player : Person
 
     public void DrinkAlkohol(int _i)
     {
+        int howManyEnabled = 0;
+
+        foreach (Transform heart in heartsSpawn)
+            if (heart.gameObject.activeInHierarchy)
+                howManyEnabled++;
+        
         if (hp < 10)
         {
             hp += _i;
 
-            for (int i = 0; i < _i; i++)
+            if (hp > 10)
+                hp = 10;
+
+            for (int i = howManyEnabled; i < hp; i++)
             {
                 heartsSpawn.GetChild(heartsSpawn.childCount).gameObject.SetActive(true);
             }
@@ -274,7 +287,7 @@ public class Player : Person
 
     public void DamageTaken()
     {
-        Destroy(heartsSpawn.GetChild(heartsSpawn.childCount - 1).gameObject);
+        heartsSpawn.GetChild(hp - 1).gameObject.SetActive(false);
         hp--;
 
         if (hp <= 0)
@@ -305,5 +318,10 @@ public class Player : Person
     {
         if (talkEnded != null)
             talkEnded(speaker);
+    }
+
+    public void Death()
+    {
+        GoToHospital();
     }
 }

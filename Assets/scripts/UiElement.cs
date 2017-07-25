@@ -7,6 +7,7 @@ public class UiElement : MonoBehaviour
 {
     public Image sprite;
     public GameObject[] stuff;
+    protected static Color selectedColor = new Color(230f/255f, 230f/255f, 230f/255f, 1), unselectedColor = new Color(1 - 230f/255f, 1 - 230f/255f, 1 - 230f/255f, 1);
     protected float yStart = -900, yEnd = 0, timeToWait = 1f;
     protected int way = 0;
     protected bool opened = false;

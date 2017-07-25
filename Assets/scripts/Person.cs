@@ -5,18 +5,19 @@ using UnityEngine;
 public class Person : MonoBehaviour 
 {
     public string _name, description;
+    public bool randomizeAfterSleep;
     public List<Item> items;
     public int cash;
     public GameObject heartPrefab, markPrefab;
     public Transform heartsSpawn;
-    public Sprite speakerSprite;
+    public Sprite speakerSprite, deadmanSprite;
     public Gun gun;
-    public int hp;
+    public int hp, maxNumberOfItems;
     public float distanceFromOrigin, speed, frequencyOfChangeDirection;
     public bool isBusy, canMove;
     public SpriteRenderer spriteRenderer;
     public string thingToSay;
-    public int tradePricesModifier;
+    public float tradePricesModifier;
 
     public Sprite[] moveSprites;
     public float moveSpriteSpeed;
@@ -152,7 +153,7 @@ public class Person : MonoBehaviour
 
     public void LetsTalk()
     {
-        Quest quest = Player._instance.quests.FindMyQuest(this);
+        Quest quest = Player._instance.questsController.FindMyQuest(this);
 
         if (quest != null)
         {
@@ -186,5 +187,22 @@ public class Person : MonoBehaviour
             GetComponent<SpriteRenderer>().color = Color.blue;
         else 
             GetComponent<SpriteRenderer>().color = Color.white;
+    }
+
+    public void Death()
+    {
+        GetComponent<SpriteRenderer>().sprite = deadmanSprite;
+        if (GetComponent<BoxCollider2D>())
+            GetComponent<BoxCollider2D>().enabled = false;
+
+        int r = 0;
+
+        do
+        {
+            r = Random.Range(-1, 2);
+        } while(r == 0);
+
+        transform.Rotate(new Vector3(0, 0, r * 90));
+        tradePricesModifier = 0;
     }
 }

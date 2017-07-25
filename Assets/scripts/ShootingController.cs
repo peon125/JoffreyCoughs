@@ -93,9 +93,11 @@ public class ShootingController : MonoBehaviour
 
         Player._instance.ShootoutOver();
 
-        if (haHaLooser == shootingEnemy)
-            Destroy(haHaLooser);
-        else
-            Debug.Log("przypal xD");
+        haHaLooser.GetComponent<Person>().Death();
+
+//        if (haHaLooser == shootingEnemy)
+//            Destroy(haHaLooser);
+//        else
+//            Debug.Log("przypal xD");
     }
 }

@@ -7,9 +7,11 @@ public abstract class Quest : MonoBehaviour
     public Person questGiver;
     public Person questReceiver;
     public Person[] peopleRelated;
+    public string questName, rewardName;
     public int allObjectives;
     public int completedObjectives;
     public string[] thingsToSay;
+    public bool[] whatGoesToQuestLog;
     public bool onQuest;
     public int questStadium = 0;
 
