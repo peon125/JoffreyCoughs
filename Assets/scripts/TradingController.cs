@@ -11,7 +11,7 @@ public class TradingController : UiElement
     //public Color selectedColor, unselectedColor;
     public Text tradersCash, playersCash, tradersItemCounter, playersItemCounter;
     Item selectedTradersItem, selectedPlayersItem;
-    int left = 0, right = 0;
+    int left = 0, right = 0, leftShift = 0;
     bool leftVerticalAxisInUse = false, rightVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightHorizontalAxisInUse = false;
 
     public Transform tradersList, playersList, tradersStats, playersStats;
@@ -29,7 +29,7 @@ public class TradingController : UiElement
 
     void Update()
     {
-        MoveObjects(stuff[1], way, yStart, yEnd, timeToWait);
+        MoveObjects(0, 1, stuff[1], way, yStart, yEnd, timeToWait);
 
         if (opened && way == 0)
         {
@@ -70,10 +70,13 @@ public class TradingController : UiElement
                         left--;
                     else
                         left = target.items.Count - 1;
+
+
                 }
                 else if (Input.GetAxisRaw("Vertical1") < 0)
                 {
                     left++;
+                    ScrollAList(tradersList, target.items.ToArray(), ref left, -1, ref leftShift);
                 }
 
                 leftVerticalAxisInUse = true;
@@ -120,27 +123,27 @@ public class TradingController : UiElement
         else
             rightVerticalAxisInUse = false;
 
-        if (tradersList.childCount > 7)
-        {
-            tradersList.localPosition = new Vector3(
-                tradersList.localPosition.x, 
-                Mathf.Clamp(traderStartingPos.y - diffrence * left, traderStartingPos.y, traderStartingPos.y - diffrence * (target.items.Count - 7)), 
-                tradersList.localPosition.z
-            );
-        }
-        else
-            tradersList.localPosition = traderStartingPos;
-
-        if (playersList.childCount > 7)
-        {
-            playersList.localPosition = new Vector3(
-                playersList.localPosition.x, 
-                Mathf.Clamp(playerStartingPos.y - diffrence * right, playerStartingPos.y, playerStartingPos.y - diffrence * (Player._instance.items.Count - 7)), 
-                playersList.localPosition.z
-            );
-        }
-        else
-            playersList.localPosition = playerStartingPos;
+//        if (tradersList.childCount > 7)
+//        {
+//            tradersList.localPosition = new Vector3(
+//                tradersList.localPosition.x, 
+//                Mathf.Clamp(traderStartingPos.y - diffrence * left, traderStartingPos.y, traderStartingPos.y - diffrence * (target.items.Count - 7)), 
+//                tradersList.localPosition.z
+//            );
+//        }
+//        else
+//            tradersList.localPosition = traderStartingPos;
+//
+//        if (playersList.childCount > 7)
+//        {
+//            playersList.localPosition = new Vector3(
+//                playersList.localPosition.x, 
+//                Mathf.Clamp(playerStartingPos.y - diffrence * right, playerStartingPos.y, playerStartingPos.y - diffrence * (Player._instance.items.Count - 7)), 
+//                playersList.localPosition.z
+//            );
+//        }
+//        else
+//            playersList.localPosition = playerStartingPos;
         
 
         if (leftHorizontalAxisInUse || leftVerticalAxisInUse || rightHorizontalAxisInUse || rightVerticalAxisInUse || leftHorizontalAxisInUse)
@@ -256,33 +259,38 @@ public class TradingController : UiElement
     {       
         UnshowItems();
 
-        for (int i = 0; i < target.items.Count; i++)
+        for (int i = 0; i < tradersList.childCount; i++)
         {
-            //tradersList.GetChild(i).GetComponent<Text>().text = target.items[i].itemName;
-            GameObject item = Instantiate(itemListElementPrefab, tradersList);
-
-            item.transform.localPosition = new Vector3(
-                itemListElementPrefab.transform.position.x, 
-                itemListElementPrefab.transform.position.y + diffrence * i, 
-                itemListElementPrefab.transform.position.z
-            );
-
-            item.GetComponent<Text>().text = target.items[i].itemName;
+            tradersList.GetChild(i).GetComponent<Text>().text = target.items[i].itemName;
         }
 
-        for (int i = 0; i < Player._instance.items.Count; i++)
-        {
-            //playersList.GetChild(i).GetComponent<Text>().text = Player._instance.items[i].itemName;
-            GameObject item = Instantiate(itemListElementPrefab, playersList);
+        leftShift = 0;
 
-            item.transform.localPosition = new Vector3(
-                itemListElementPrefab.transform.position.x, 
-                itemListElementPrefab.transform.position.y + diffrence * i, 
-                itemListElementPrefab.transform.position.z
-            );
-
-            item.GetComponent<Text>().text = Player._instance.items[i].itemName;
-        }
+//        for (int i = 0; i < target.items.Count; i++)
+//        {
+//            GameObject item = Instantiate(itemListElementPrefab, tradersList);
+//
+//            item.transform.localPosition = new Vector3(
+//                itemListElementPrefab.transform.position.x, 
+//                itemListElementPrefab.transform.position.y + diffrence * i, 
+//                itemListElementPrefab.transform.position.z
+//            );
+//
+//            item.GetComponent<Text>().text = target.items[i].itemName;
+//        }
+//
+//        for (int i = 0; i < Player._instance.items.Count; i++)
+//        {
+//            GameObject item = Instantiate(itemListElementPrefab, playersList);
+//
+//            item.transform.localPosition = new Vector3(
+//                itemListElementPrefab.transform.position.x, 
+//                itemListElementPrefab.transform.position.y + diffrence * i, 
+//                itemListElementPrefab.transform.position.z
+//            );
+//
+//            item.GetComponent<Text>().text = Player._instance.items[i].itemName;
+//        }
 
 //        for (int i = target.items.Count; i < tradersList.childCount; i++)
 //        {
@@ -302,14 +310,9 @@ public class TradingController : UiElement
 
     void UnshowItems()
     {
-        foreach (Transform item in playersList)
-        {
-            Destroy(item.gameObject);
-        }
-
         foreach (Transform item in tradersList)
         {
-            Destroy(item.gameObject);
+            item.GetComponent<Text>().text = "---";
         }
     }
 

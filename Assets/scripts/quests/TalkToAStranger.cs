@@ -70,7 +70,5 @@ public class TalkToAStranger : Quest
 
         if (Player._instance.questsController.trackedQuest == this)
             Player._instance.questsController.UpdateTracker();
-        
-
     }
 }

@@ -13,15 +13,23 @@ public class UiElement : MonoBehaviour
     protected bool opened = false;
     protected Person target;
 
-    public static void MoveObjects(GameObject gameObject, int way, float min, float max, float time)
+    public static void MoveObjects(int axisX, int axisY, GameObject gameObject, int way, float min, float max, float time)
     {
         if (way != 0)
         {
             gameObject.transform.localPosition += new Vector3(
-                0,
-                way * (Mathf.Abs(min + max) / time) * Time.deltaTime,
+                axisX * (way * (Mathf.Abs(min + max) / time) * Time.deltaTime),
+                axisY * (way * (Mathf.Abs(min + max) / time) * Time.deltaTime),
                 0
             );
+
+            float x = 0, y = 0;
+
+            if (axisX != 0)
+                x = Mathf.Clamp(gameObject.transform.localPosition.x, min, max);
+
+            if (axisY != 0)
+                y = Mathf.Clamp(gameObject.transform.localPosition.y, min, max);
 
             gameObject.transform.localPosition = new Vector3(
                 gameObject.transform.localPosition.x,
@@ -32,6 +40,32 @@ public class UiElement : MonoBehaviour
 //            if (gameObject.transform.localPosition.y >= max || gameObject.transform.localPosition.y <= min)
 //                way = 0;
         }
+    }
+
+    public static int ScrollAList(Transform list, Item[] items, ref int iterator, int way, ref int currentShift)
+    {
+        if (way == -1 && iterator == list.childCount - 1)
+        {
+            currentShift += 1;
+
+            for (int j = 0; j < list.childCount; j++)
+            {
+                list.GetChild(j).GetComponent<Text>().text = items[j + currentShift].itemName; 
+            }
+
+            if (currentShift == items.Length - list.childCount)
+            {
+                Debug.Log("0");
+                return iterator + 1;
+            }
+            else
+            {
+                Debug.Log("1");
+                return iterator;
+            }
+        }
+
+        return iterator;
     }
 
     protected IEnumerator OpenDialogue()

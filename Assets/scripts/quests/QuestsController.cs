@@ -36,9 +36,9 @@ public class QuestsController : UiElement
 
     void Update()
     {
-        MoveObjects(stuff[1], way, yStart, yEnd, timeToWait);
+        MoveObjects(0, 1, stuff[1], way, yStart, yEnd, timeToWait);
 
-        MoveObjects(trackBackground.parent.gameObject, trackerWay, trackerMin, trackerMax, timeToWait);
+        MoveObjects(0, 1, trackBackground.parent.gameObject, trackerWay, trackerMin, trackerMax, timeToWait);
 
         if (opened && way == 0)
         {
