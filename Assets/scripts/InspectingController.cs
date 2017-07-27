@@ -14,17 +14,17 @@ public class InspectingController : UiElement
         if (opened && way == 0)
         {
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Inspect"))
-                StartCoroutine(CloseDialogue());
+                StartCoroutine(CloseDialogue(stuff[1].transform));
         }
     }
         
     public void StartInspecting()
     {
-        StartCoroutine(OpenDialogue());
+        StartCoroutine(OpenDialogue(true));
         target = Player._instance.target;
         sprite.sprite = target.speakerSprite;
 
-        ShowItems();
+        //ShowItems();
     }
 
     void ShowItems()

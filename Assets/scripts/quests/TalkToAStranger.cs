@@ -6,28 +6,14 @@ public class TalkToAStranger : Quest
 {
     public Person fellaToSpeakWith;
     public GameObject reward;
-
-    public override void ActivateTheQuest()
-    {
-        onQuest = true;
-
-        Player._instance.talkEnded += CheckIfObjectiveIsCompleted;
-
-        Player._instance.questsController.activatedQuests.Add(this);
-    }
-
-    void CheckIfObjectiveIsCompleted(Person speaker)
-    {
-        if (fellaToSpeakWith == speaker)
-            ObjectiveCompleted();
-    }
-
+    
     public override void CheckOnQuest(Person person)
     {
         if (!onQuest && completedObjectives != allObjectives)
         {
             person.thingToSay = thingsToSay[0];
             ActivateTheQuest();
+            Player._instance.talkEnded += CheckIfObjectiveIsCompleted;
             questStadium = 1;
             questTrackContent = whatToPutIntoQuestTrack[0];
         }
@@ -55,17 +41,24 @@ public class TalkToAStranger : Quest
         }
     }
 
-    void  ObjectiveCompleted()
+    void CheckIfObjectiveIsCompleted(Person speaker)
+    {
+        if (fellaToSpeakWith == speaker)
+            ObjectiveCompleted();
+    }
+
+    void ObjectiveCompleted()
     {
         completedObjectives++;
 
-        if (completedObjectives >= allObjectives)
+        if (completedObjectives == allObjectives)
             QuestCompleted();
     }
 
     void QuestCompleted()
     {
         Player._instance.talkEnded -= CheckIfObjectiveIsCompleted;
+        Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);
         questTrackContent = whatToPutIntoQuestTrack[1];
 
         if (Player._instance.questsController.trackedQuest == this)

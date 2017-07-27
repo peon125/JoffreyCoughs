@@ -8,15 +8,14 @@
       <File FileName="Assets\scripts\quests\Quest.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\TalkingController.cs" Line="1" Column="1" />
       <File FileName="Assets\scripts\ShootingController.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\InspectingController.cs" Line="1" Column="1" />
-      <File FileName="Assets\scripts\UiElement.cs" Line="58" Column="29" />
-      <File FileName="Assets\scripts\TradingController.cs" Line="79" Column="19" />
+      <File FileName="Assets\scripts\UiElement.cs" Line="46" Column="6" />
+      <File FileName="Assets\scripts\TradingController.cs" Line="1" Column="1" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>
     <BreakpointStore>
-      <Breakpoint file="D:\UnityProjects\joffreyCoughs\Assets\scripts\TradingController.cs" line="79" column="41" />
-      <Breakpoint file="D:\UnityProjects\joffreyCoughs\Assets\scripts\TradingController.cs" line="78" column="1" />
+      <Breakpoint file="D:\UnityProjects\joffreyCoughs\Assets\scripts\TradingController.cs" line="404" column="41" />
+      <Breakpoint file="D:\UnityProjects\joffreyCoughs\Assets\scripts\TradingController.cs" line="403" column="1" />
     </BreakpointStore>
   </MonoDevelop.Ide.DebuggingService.Breakpoints>
   <MonoDevelop.Ide.DebuggingService.PinnedWatches />

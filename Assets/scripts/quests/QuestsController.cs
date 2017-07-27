@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -9,12 +10,13 @@ public class QuestsController : UiElement
     public GameObject questsListElementPrefab;
     public Transform questsStatus, questsList, questsTransform;
     public Text questTitle, questReward, questDescription;
+    public QuestLogUpdatedInformer questLogUpdatedInformer;
     public float scrollingSpeed;
 
     public Text trackQuestName, trackQuestContent;
     public RectTransform trackBackground;
 
-    int left = 0, up = 0, right = 0;
+    int left = 0, up = 0, right = 0, leftShift = 0;
     bool leftVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightVerticalAxisInUse = false;
     List<Quest> currentlyChoosedQuests = new List<Quest>();
 
@@ -44,8 +46,8 @@ public class QuestsController : UiElement
         {
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("QuestLog"))
             {
-                StartCoroutine(CloseDialogue());
-                UnshowQuests();
+                StartCoroutine(CloseDialogue(stuff[1].transform));
+                //UnshowQuests();
             }
 
             if (Input.GetKeyDown(KeyCode.F) && (up == 0))
@@ -69,11 +71,11 @@ public class QuestsController : UiElement
             SelectingQuest();
         }
 
-        questsList.localPosition = new Vector3(
-            questsList.localPosition.x,
-            Mathf.Clamp(questsListStartPos.y - 35 * left, questsListStartPos.y, questsListStartPos.y - 35 * (currentlyChoosedQuests.Count - 7)),
-            questsList.localPosition.z
-        );
+        //questsList.localPosition = new Vector3(
+        //    questsList.localPosition.x,
+        //    Mathf.Clamp(questsListStartPos.y - 35 * left, questsListStartPos.y, questsListStartPos.y - 35 * (currentlyChoosedQuests.Count - 7)),
+        //    questsList.localPosition.z
+        //);
 
         if (questDescription.GetComponent<RectTransform>().sizeDelta.y > descriptionLength * 2)
         {
@@ -96,7 +98,7 @@ public class QuestsController : UiElement
 
     public void StatViewingQuests()
     {
-        StartCoroutine(OpenDialogue());
+        StartCoroutine(OpenDialogue(true));
 
         ShowQuests();
         ShowDetailsOfQuest();
@@ -104,23 +106,40 @@ public class QuestsController : UiElement
 
     void ShowQuests()
     {
-        UnshowQuests();
+        //UnshowQuests();
 
-        for (int i = 0; i < currentlyChoosedQuests.Count; i++)
+        for (int i = 0; i < questsList.childCount && i < currentlyChoosedQuests.Count; i++)
         {
-            GameObject questName = (GameObject)Instantiate(
-                questsListElementPrefab,
-                questsListElementPrefab.transform.localPosition,
-                questsListElementPrefab.transform.rotation,
-                questsList
-            );
+            questsList.GetChild(i).GetComponent<Text>().text = currentlyChoosedQuests[i].questName;
 
-            questName.transform.localPosition = new Vector3(
-                0,
-                (questsListElementPrefab.transform.localScale.y - 10) * i,
-                0
-            );
+            if (questsList.GetChild(i).GetComponent<Text>().text.Length > 13)
+                questsList.GetChild(i).GetComponent<Text>().text = questsList.GetChild(i).GetComponent<Text>().text.Substring(0, 10) + "...";
         }
+
+        for (int i = currentlyChoosedQuests.Count; i < questsList.childCount; i++)
+        {
+            questsList.GetChild(i).GetComponent<Text>().text = "---";
+        }
+
+        leftShift = 0;
+        left = 0;
+
+
+        //for (int i = 0; i < currentlyChoosedQuests.Count; i++)
+        //{
+        //    GameObject questName = (GameObject)Instantiate(
+        //        questsListElementPrefab,
+        //        questsListElementPrefab.transform.localPosition,
+        //        questsListElementPrefab.transform.rotation,
+        //        questsList
+        //    );
+
+        //    questName.transform.localPosition = new Vector3(
+        //        0,
+        //        (questsListElementPrefab.transform.localScale.y - 10) * i,
+        //        0
+        //    );
+        //}
 
         ShowDetailsOfQuest();
 
@@ -163,14 +182,15 @@ public class QuestsController : UiElement
             {
                 if (Input.GetAxisRaw("Vertical1") > 0)
                 {
-                    if (left - 1 >= 0)
-                        left--;
-                    else
-                        left = currentlyChoosedQuests.Count - 1;
+                    left--;
+
+                    ScrollAList(questsList, currentlyChoosedQuests.ToArray(), ref left, 1, ref leftShift);
                 }
                 else if (Input.GetAxisRaw("Vertical1") < 0)
                 {
                     left++;
+
+                    ScrollAList(questsList, currentlyChoosedQuests.ToArray(), ref left, -1, ref leftShift);
                 }
 
                 leftVerticalAxisInUse = true;
@@ -271,5 +291,10 @@ public class QuestsController : UiElement
             trackBackground.sizeDelta.x,
             trackQuestName.GetComponent<RectTransform>().sizeDelta.y + trackQuestContent.GetComponent<RectTransform>().sizeDelta.y + 40
         );
+    }
+
+    public void UpdateQuestLog()
+    {
+        
     }
 }

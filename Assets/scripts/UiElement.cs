@@ -32,55 +32,132 @@ public class UiElement : MonoBehaviour
                 y = Mathf.Clamp(gameObject.transform.localPosition.y, min, max);
 
             gameObject.transform.localPosition = new Vector3(
-                gameObject.transform.localPosition.x,
-                Mathf.Clamp(gameObject.transform.localPosition.y, min, max),
+                x,
+                y,
                 gameObject.transform.localPosition.z
             );
-
-//            if (gameObject.transform.localPosition.y >= max || gameObject.transform.localPosition.y <= min)
-//                way = 0;
         }
     }
 
-    public static int ScrollAList(Transform list, Item[] items, ref int iterator, int way, ref int currentShift)
+    public static void ScrollAList(Transform list, Item[] items, ref int iterator, int way, ref int currentShift)
     {
-        if (way == -1 && iterator == list.childCount - 1)
+        if (items.Length <= list.childCount)
         {
-            currentShift += 1;
-
-            for (int j = 0; j < list.childCount; j++)
+            if (items.Length != 0)
             {
-                list.GetChild(j).GetComponent<Text>().text = items[j + currentShift].itemName; 
-            }
-
-            if (currentShift == items.Length - list.childCount)
-            {
-                Debug.Log("0");
-                return iterator + 1;
+                if (iterator < 0)
+                    iterator = items.Length - 1;
+                iterator %= items.Length;
             }
             else
+                iterator = items.Length + 1;
+
+            return;
+        }
+
+        if (way == -1)
+        {
+            if (currentShift != items.Length - list.childCount && iterator == list.childCount - 1)
             {
-                Debug.Log("1");
-                return iterator;
+                currentShift += 1;
+
+                iterator -= 1;
+            }
+            else if (currentShift == items.Length - list.childCount && iterator == list.childCount)
+            {
+                currentShift = 0;
+
+                iterator = 0;
+            }
+        }
+        else if (way == 1)
+        {
+            if (currentShift != 0 && iterator == 0)
+            {
+                currentShift -= 1;
+
+                iterator += 1;
+            }
+            else if (currentShift == 0 && iterator == -1)
+            {
+                currentShift = items.Length - list.childCount;
+
+                iterator = list.childCount - 1;
             }
         }
 
-        return iterator;
+        for (int j = 0; j < list.childCount; j++)
+        {
+            list.GetChild(j).GetComponent<Text>().text = items[j + currentShift].itemName; 
+        }
     }
 
-    protected IEnumerator OpenDialogue()
+    public static void ScrollAList(Transform list, Quest[] items, ref int iterator, int way, ref int currentShift)
+    {
+        if (items.Length <= list.childCount)
+        {
+            if (items.Length != 0)
+            {
+                if (iterator < 0)
+                    iterator = items.Length - 1;
+                iterator %= items.Length;
+            }
+            else
+                iterator = items.Length + 1;
+
+            return;
+        }
+
+        if (way == -1)
+        {
+            if (currentShift != items.Length - list.childCount && iterator == list.childCount - 1)
+            {
+                currentShift += 1;
+
+                iterator -= 1;
+            }
+            else if (currentShift == items.Length - list.childCount && iterator == list.childCount)
+            {
+                currentShift = 0;
+
+                iterator = 0;
+            }
+        }
+        else if (way == 1)
+        {
+            if (currentShift != 0 && iterator == 0)
+            {
+                currentShift -= 1;
+
+                iterator += 1;
+            }
+            else if (currentShift == 0 && iterator == -1)
+            {
+                currentShift = items.Length - list.childCount;
+
+                iterator = list.childCount - 1;
+            }
+        }
+
+        for (int j = 0; j < list.childCount; j++)
+        {
+            list.GetChild(j).GetComponent<Text>().text = items[j + currentShift].questName;
+        }
+    }
+
+    protected IEnumerator OpenDialogue(bool playerIsBusyUsingIt)
     {
         Open(true);
         way = 1;
 
-        Player._instance.isBusy = true;
+        Player._instance.isBusy = playerIsBusyUsingIt;
 
         yield return new WaitForSeconds(timeToWait);
 
         way = 0;
     }
 
-    protected IEnumerator CloseDialogue()
+    protected IEnumerator CloseDialogue(Transform stuff)
     {
         way = -1;
 
@@ -88,10 +165,10 @@ public class UiElement : MonoBehaviour
 
         Open(false);
 
-        stuff[1].transform.localPosition = new Vector3(
-            stuff[1].transform.localPosition.x,
+        stuff.transform.localPosition = new Vector3(
+            stuff.transform.localPosition.x,
             yStart,
-            stuff[1].transform.localPosition.z
+            stuff.transform.localPosition.z
         );
 
         Player._instance.isBusy = false;

@@ -17,7 +17,12 @@ public abstract class Quest : MonoBehaviour
     public int questStadium = 0;
     public string questTrackContent;
 
-    public abstract void ActivateTheQuest();
+    public void ActivateTheQuest()
+    {
+        onQuest = true;
+        Player._instance.questsController.activatedQuests.Add(this);
+        Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);
+    }
 
     public abstract void CheckOnQuest(Person person);
 }
