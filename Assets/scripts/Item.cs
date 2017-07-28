@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Item : MonoBehaviour 
+public abstract class Item : MonoBehaviour 
 {
     public string[] namesOfStats;
     public float[] stats;
@@ -10,4 +10,7 @@ public class Item : MonoBehaviour
     public string itemName;
     public string slot;
     public int value;
+    public bool usable;
+
+    public abstract void Use();
 }

@@ -2,15 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Food : Item {
-
-	// Use this for initialization
-	void Start () {
-		
-	}
+public class Food : Item
+{
+    public int restoreHp;
 	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+    public override void Use()
+    { 
+        for (int i = 0; i < restoreHp && Player._instance.hp < Player._instance.maxHp; i++)
+        {
+            Player._instance.hp++;
+        }
+
+        Debug.Log(name);
+
+        Player._instance.items.Remove(this);
+    }
 }

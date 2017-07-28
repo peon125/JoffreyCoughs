@@ -7,6 +7,7 @@ public delegate void ShootingEnded(Person winner, Person looser, Gun playersGun)
 public delegate void TradeEnded(Person trader, List<Item> boughtItems, int spentMoney);
 public delegate void InspectionEnded(Person inspected);
 public delegate void TalkEnded(Person speaker);
+public delegate void ItemUsed(Item item);
 
 public class Player : Person 
 {
@@ -16,12 +17,14 @@ public class Player : Person
     public event TradeEnded tradeEnded;
     public event InspectionEnded inspectionEnded;
     public event TalkEnded talkEnded;
+    public event ItemUsed itemUsed;
 
     public TradingController tradingController;
     public InspectingController inspectingController;
     public TalkingController talkingController;
     public ShootingController shootingController;
     public QuestsController questsController;
+    public EquipmentController equipmentController;
 
 //    public List<Item> items;
 //    public Gun gun;
@@ -31,14 +34,15 @@ public class Player : Person
     public float radius;
     public Person target;
 
-//    public Sprite[] moveSprites;
-//    public float moveSpriteSpeed;
-//    float moveSpriteTimer = 0f;
-//    int moveI = 0;
+    //    public Sprite[] moveSprites;
+    //    public float moveSpriteSpeed;
+    //    float moveSpriteTimer = 0f;
+    //    int moveI = 0;
 
-//    public Transform heartsSpawn;
-//    public GameObject heartPrefab;
-//    public int hp;
+    //    public Transform heartsSpawn;
+    //    public GameObject heartPrefab;
+    //    public int hp;
+    public int maxHp;
 
     public Transform feedTransform;
     public GameObject feedPrefab;
@@ -132,6 +136,9 @@ public class Player : Person
                 if (Input.GetButtonDown("Inspect"))
                     target.LetsSee();
             }
+
+            if(Input.GetButtonDown("Equipment"))
+                equipmentController.StartEquiping();
 
             if (Input.GetButtonDown("QuestLog"))
                 questsController.StatViewingQuests();

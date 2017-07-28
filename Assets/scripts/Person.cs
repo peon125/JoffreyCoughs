@@ -2,22 +2,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Person : MonoBehaviour 
+public class Person : InteractableObject 
 {
-    public string _name, description;
-    public bool randomizeAfterSleep;
-    public List<Item> items;
-    public int cash;
-    public GameObject heartPrefab, markPrefab;
-    public Transform heartsSpawn;
-    public Sprite speakerSprite, deadmanSprite;
-    public Gun gun;
-    public int hp, maxNumberOfItems;
+    //public string _name, description;
+    //public bool randomizeAfterSleep;
+    //public int cash;
+    //public GameObject heartPrefab, markPrefab;
+    //public Transform heartsSpawn;
+    // //deadmanSprite;
+    //public Gun gun;
+    //public int hp, maxNumberOfItems;
     public float distanceFromOrigin, speed, frequencyOfChangeDirection;
     public bool isBusy, canMove;
     public SpriteRenderer spriteRenderer;
-    public string thingToSay;
-    public float tradePricesModifier;
 
     public Sprite[] moveSprites;
     public float moveSpriteSpeed;
@@ -191,18 +188,29 @@ public class Person : MonoBehaviour
 
     public void Death()
     {
-        GetComponent<SpriteRenderer>().sprite = deadmanSprite;
-        if (GetComponent<BoxCollider2D>())
-            GetComponent<BoxCollider2D>().enabled = false;
+        GameObject bundle = (GameObject)Instantiate(
+            StaticValues._instance.bundlePrefab,
+            transform.position,
+            StaticValues._instance.bundlePrefab.transform.rotation,
+            StaticValues._instance.bundlesTransform
+            );
 
-        int r = 0;
+        bundle.GetComponent<Bundle>().items = items;
 
-        do
-        {
-            r = Random.Range(-1, 2);
-        } while(r == 0);
+        gameObject.SetActive(false);
 
-        transform.Rotate(new Vector3(0, 0, r * 90));
-        tradePricesModifier = 0;
+        //GetComponent<SpriteRenderer>().sprite = deadmanSprite;
+        //if (GetComponent<BoxCollider2D>())
+        //    GetComponent<BoxCollider2D>().enabled = false;
+
+        //int r = 0;
+
+        //do
+        //{
+        //    r = Random.Range(-1, 2);
+        //} while(r == 0);
+
+        //transform.Rotate(new Vector3(0, 0, r * 90));
+        //tradePricesModifier = 0;
     }
 }

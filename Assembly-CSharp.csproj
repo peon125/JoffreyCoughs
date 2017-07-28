@@ -46,13 +46,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+     <Compile Include="Assets\Bundle.cs" />
+     <Compile Include="Assets\EquipmentController.cs" />
      <Compile Include="Assets\Portal.cs" />
+     <Compile Include="Assets\StaticValues.cs" />
      <Compile Include="Assets\scripts\CameraWorldMovement.cs" />
      <Compile Include="Assets\scripts\Counter.cs" />
      <Compile Include="Assets\scripts\Food.cs" />
      <Compile Include="Assets\scripts\Gun.cs" />
      <Compile Include="Assets\scripts\Gunman.cs" />
      <Compile Include="Assets\scripts\InspectingController.cs" />
+     <Compile Include="Assets\scripts\InteractableObject.cs" />
      <Compile Include="Assets\scripts\Item.cs" />
      <Compile Include="Assets\scripts\Keys.cs" />
      <Compile Include="Assets\scripts\Person.cs" />
