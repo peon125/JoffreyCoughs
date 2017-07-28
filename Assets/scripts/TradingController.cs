@@ -48,7 +48,7 @@ public class TradingController : UiElement
             {
                 if (Input.GetAxisRaw("Horizontal1") > 0)
                 {
-                    Trade(target, Player._instance, left, leftShift, Player._instance.tradePricesModifier);
+                    Trade(target, Player._instance, left, leftShift, target.sellingPriceModifier, Player._instance.buyingPriceModifier);
                     //BuyItem();
                 }
 
@@ -88,7 +88,7 @@ public class TradingController : UiElement
             {
                 if (Input.GetAxisRaw("Horizontal2") < 0)
                 {
-                    Trade(Player._instance, target, right, rightShift, target.tradePricesModifier);
+                    Trade(Player._instance, target, right, rightShift, Player._instance.sellingPriceModifier, target.buyingPriceModifier);
                     //SellItem();
                 }
 
@@ -144,12 +144,12 @@ public class TradingController : UiElement
         }
     }
 
-    void ViewStats(Item item, Transform transform, string[] names, float[] values, string slot, int value, float modifier)
+    void ViewStats(Item item, Transform transform, string[] names, float[] values, string slot, int value, float sellerModifier, float buyerModifier)
     {
         if (item != null)
         {
             transform.GetChild(4).GetChild(0).GetComponent<Text>().text = item.slot;
-            transform.GetChild(5).GetChild(0).GetComponent<Text>().text = (item.value * modifier).ToString();
+            transform.GetChild(5).GetChild(0).GetComponent<Text>().text = (item.value * sellerModifier * buyerModifier).ToString();
 
             for (int i = 0; i < names.Length; i++)
             {
@@ -191,7 +191,8 @@ public class TradingController : UiElement
                 target.items[left].stats,
                 target.items[left].slot, 
                 target.items[left].value, 
-                target.tradePricesModifier
+                target.sellingPriceModifier,
+                Player._instance.buyingPriceModifier
             );
         else
             ViewStats(
@@ -201,6 +202,7 @@ public class TradingController : UiElement
                 new float[0],
                 "----", 
                 0, 
+                0,
                 0
             );
 
@@ -222,8 +224,9 @@ public class TradingController : UiElement
                 Player._instance.items[right].namesOfStats, 
                 Player._instance.items[right].stats,
                 Player._instance.items[right].slot,
-                Player._instance.items[right].value, 
-                1
+                Player._instance.items[right].value,
+                Player._instance.buyingPriceModifier,
+                target.sellingPriceModifier
             );
         else
             ViewStats(
@@ -233,6 +236,7 @@ public class TradingController : UiElement
                 new float[0],
                 "----", 
                 0, 
+                0,
                 0
             );
 
@@ -292,66 +296,17 @@ public class TradingController : UiElement
         }
     }
 
-    //void BuyItem()
-    //{
-    //    left += leftShift;
-
-    //    if (Player._instance.items.Count == Player._instance.maxNumberOfItems || target.items.Count == 0)
-    //        return;
-
-    //    // sprawdz czy na pewno chcesz
-
-    //    if (Player._instance.cash - target.items[left].value >= 0 && target.cash + target.items[left].value <= 99999999)
-    //    {
-    //        Player._instance.cash -= Mathf.FloorToInt(target.items[left].value * target.tradePricesModifier);
-    //        target.cash += Mathf.FloorToInt(target.items[left].value * target.tradePricesModifier);
-    //    }
-    //    else
-    //        return;
-
-    //    Player._instance.items.Add(target.items[left]);
-    //    target.items.Remove(target.items[left]);
-
-    //    ShowItems();
-    //}
-
-    //void SellItem()
-    //{
-    //    right += rightShift;
-
-    //    if (target.items.Count == target.maxNumberOfItems || Player._instance.items.Count == 0)
-    //        return;
-
-    //    // sprawdz czy na pewno chcesz
-
-    //    if (target.cash - Player._instance.items[right].value >= 0 && Player._instance.cash + Player._instance.items[right].value <= 99999999)
-    //    {
-    //        target.cash -= Player._instance.items[right].value;
-    //        Player._instance.cash += Player._instance.items[right].value;
-    //    }
-    //    else
-    //        return;
-
-    //    target.items.Add(Player._instance.items[right]);
-    //    Player._instance.items.Remove(Player._instance.items[right]);
-
-    //    ShowItems();
-    //}
-
-    void Trade(Person seller, Person buyer, int sellerIterator, int selletIteratorShift, float modifier)
+    void Trade(InteractableObject seller, InteractableObject buyer, int sellerIterator, int selletIteratorShift, float sellerModifier, float buyerModifier)
     {
         sellerIterator += selletIteratorShift;
 
         if (buyer.items.Count == buyer.maxNumberOfItems || seller.items.Count == 0)
             return;
 
-        // sprawdz czy na pewno chcesz
-
-        if (buyer.cash - seller.items[sellerIterator].value >= 0 && seller.cash + seller.items[sellerIterator].value <= 99999999)
+        if (buyer.cash - seller.items[sellerIterator].value * sellerModifier * buyerModifier >= 0 && seller.cash + seller.items[sellerIterator].value * sellerModifier * buyerModifier <= 99999999)
         {
-            buyer.cash -= Mathf.FloorToInt(seller.items[sellerIterator].value * modifier);
-            seller.cash += Mathf.FloorToInt(seller.items[sellerIterator].value * modifier);
-            //Mathf.FloorToInt(target.items[left].value * target.tradePricesModifier);
+            buyer.cash -= Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
+            seller.cash += Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
         }
         else
             return;

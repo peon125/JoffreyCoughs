@@ -4,16 +4,8 @@ using UnityEngine;
 
 public class Person : InteractableObject 
 {
-    //public string _name, description;
-    //public bool randomizeAfterSleep;
-    //public int cash;
-    //public GameObject heartPrefab, markPrefab;
-    //public Transform heartsSpawn;
-    // //deadmanSprite;
-    //public Gun gun;
-    //public int hp, maxNumberOfItems;
     public float distanceFromOrigin, speed, frequencyOfChangeDirection;
-    public bool isBusy, canMove;
+    public bool canMove;
     public SpriteRenderer spriteRenderer;
 
     public Sprite[] moveSprites;
@@ -69,31 +61,6 @@ public class Person : InteractableObject
         }
     }
 
-    public  void PrepareToShootout()
-    {
-        for (int i = 0; i < hp; i++)
-        {
-            Vector2 pos = new Vector2(
-                -i * (heartPrefab.GetComponent<RectTransform>().sizeDelta.y + 0),
-                0
-            );
-
-            GameObject heart = Instantiate(heartPrefab, heartsSpawn) as GameObject;
-
-            heart.transform.localPosition = pos;
-        }
-
-        isBusy = true;
-    }
-
-    public void ShootoutOver()
-    {
-        isBusy = false;
-
-        foreach (Transform heart in heartsSpawn)
-            Destroy(heart.gameObject);
-    }
-
     protected void Move()
     {
         if (canMove)
@@ -130,45 +97,7 @@ public class Person : InteractableObject
     {
         if(collision.gameObject.name == "player")
             doMove = true;
-    }
-
-    public void DamageTaken()
-    {
-        Destroy(heartsSpawn.GetChild(0).gameObject);
-        hp--;
-
-        if (hp <= 0)
-        {
-            Player._instance.shootingController.ShootoutOver(gameObject);
-        }
-    }
-
-    public void LetsShoot()
-    {
-        Player._instance.shootingController.StartShooting(this);
-    }
-
-    public void LetsTalk()
-    {
-        Quest quest = Player._instance.questsController.FindMyQuest(this);
-
-        if (quest != null)
-        {
-            quest.CheckOnQuest(this);
-        } 
-
-        Player._instance.talkingController.StartTalking(thingToSay);
-    }
-
-    public void LetsTrade()
-    {
-        Player._instance.tradingController.StartTrading();
-    }
-
-    public void LetsSee()
-    {
-        Player._instance.inspectingController.StartInspecting();
-    }
+    }    
 
     public void IAmGivingQuest<T>(bool b)
     {
@@ -198,19 +127,7 @@ public class Person : InteractableObject
         bundle.GetComponent<Bundle>().items = items;
 
         gameObject.SetActive(false);
-
-        //GetComponent<SpriteRenderer>().sprite = deadmanSprite;
-        //if (GetComponent<BoxCollider2D>())
-        //    GetComponent<BoxCollider2D>().enabled = false;
-
-        //int r = 0;
-
-        //do
-        //{
-        //    r = Random.Range(-1, 2);
-        //} while(r == 0);
-
-        //transform.Rotate(new Vector3(0, 0, r * 90));
-        //tradePricesModifier = 0;
+        transform.parent = StaticValues._instance.graveyard;
+        transform.localPosition = Vector3.zero;
     }
 }

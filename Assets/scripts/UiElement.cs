@@ -11,7 +11,7 @@ public class UiElement : MonoBehaviour
     protected float yStart = -900, yEnd = 0, timeToWait = 1f;
     protected int way = 0;
     protected bool opened = false;
-    protected Person target;
+    protected InteractableObject target;
 
     public static void MoveObjects(int axisX, int axisY, GameObject gameObject, int way, float min, float max, float time)
     {

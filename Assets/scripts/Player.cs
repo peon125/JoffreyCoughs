@@ -3,10 +3,10 @@ using System.Collections.Generic;
 using UnityEngine;
 using System;
 
-public delegate void ShootingEnded(Person winner, Person looser, Gun playersGun);
-public delegate void TradeEnded(Person trader, List<Item> boughtItems, int spentMoney);
-public delegate void InspectionEnded(Person inspected);
-public delegate void TalkEnded(Person speaker);
+public delegate void ShootingEnded(InteractableObject winner, InteractableObject looser, Gun playersGun);
+public delegate void TradeEnded(InteractableObject trader, List<Item> boughtItems, int spentMoney);
+public delegate void InspectionEnded(InteractableObject inspected);
+public delegate void TalkEnded(InteractableObject speaker);
 public delegate void ItemUsed(Item item);
 
 public class Player : Person 
@@ -26,22 +26,9 @@ public class Player : Person
     public QuestsController questsController;
     public EquipmentController equipmentController;
 
-//    public List<Item> items;
-//    public Gun gun;
-//    public int cash;
-
     public Transform enemies;
     public float radius;
-    public Person target;
-
-    //    public Sprite[] moveSprites;
-    //    public float moveSpriteSpeed;
-    //    float moveSpriteTimer = 0f;
-    //    int moveI = 0;
-
-    //    public Transform heartsSpawn;
-    //    public GameObject heartPrefab;
-    //    public int hp;
+    public InteractableObject target;
     public int maxHp;
 
     public Transform feedTransform;
@@ -76,39 +63,6 @@ public class Player : Person
 	void Update()
     {
         Feed();
-
-//        if ((Input.GetAxis("Vertical") != 0 || Input.GetAxis("Horizontal") != 0) || moving)
-//        {
-//            timer += Time.deltaTime;
-//
-//            if (Input.GetAxis("Horizontal") > 0)
-//                x = 1;
-//            else if (Input.GetAxis("Horizontal") < 0)
-//                x = -1;
-//
-//            if (Input.GetAxis("Vertical") > 0)
-//                y = 1;
-//            else if (Input.GetAxis("Vertical") < 0)
-//                y = -1;
-//
-//            if (timer - secondTimer > 0.25f)
-//            {
-//                transform.localPosition += new Vector3(
-//                    x * speed,
-//                    y * speed,
-//                    0
-//                );
-//
-//                secondTimer = timer;
-//            }
-//        }
-//        else
-//        {
-//            timer = 1f;
-//            secondTimer = 0f;
-//            x = 0;
-//            y = 0;
-//        }
 
         if (!isBusy)
         {
@@ -262,12 +216,12 @@ public class Player : Person
                 }
             }
 
-            if (target != nearest.GetComponent<Person>() && target != null)
+            if (target != nearest.GetComponent<InteractableObject>() && target != null)
             {
                 target.GetComponent<SpriteRenderer>().color = Color.white;
                
             }
-            target = nearest.GetComponent<Person>();
+            target = nearest.GetComponent<InteractableObject>();
             target.GetComponent<SpriteRenderer>().color = Color.green;
         }
         else
@@ -319,7 +273,7 @@ public class Player : Person
             inspectionEnded(inspected);
     }
 
-    public void EndOfTalk(Person speaker)
+    public void EndOfTalk(InteractableObject speaker)
     {
         if (talkEnded != null)
             talkEnded(speaker);

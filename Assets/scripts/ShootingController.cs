@@ -15,9 +15,9 @@ public class ShootingController : MonoBehaviour
     List<int> takenCordsX;
     List<int> takenCordsY;
     Player shootingPlayer;
-    public Person shootingEnemy;
+    public InteractableObject shootingEnemy;
 
-    public void StartShooting(Person enemy)
+    public void StartShooting(InteractableObject enemy)
     {
         Player._instance.PrepareToShootout();
         shootingEnemy = enemy;

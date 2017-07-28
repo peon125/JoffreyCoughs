@@ -87,7 +87,7 @@ public class QuestsController : UiElement
         }
     }
 
-    public Quest FindMyQuest(Person person)
+    public Quest FindMyQuest(InteractableObject person)
     {
         foreach (Transform quest in questsTransform)
             if (quest.GetComponent<Quest>() && quest.GetComponent<Quest>().questGiver == person)

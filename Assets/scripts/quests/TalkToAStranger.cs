@@ -7,7 +7,7 @@ public class TalkToAStranger : Quest
     public Person fellaToSpeakWith;
     public GameObject reward;
     
-    public override void CheckOnQuest(Person person)
+    public override void CheckOnQuest(InteractableObject person)
     {
         if (!onQuest && completedObjectives != allObjectives)
         {
@@ -41,7 +41,7 @@ public class TalkToAStranger : Quest
         }
     }
 
-    void CheckIfObjectiveIsCompleted(Person speaker)
+    void CheckIfObjectiveIsCompleted(InteractableObject speaker)
     {
         if (fellaToSpeakWith == speaker)
             ObjectiveCompleted();

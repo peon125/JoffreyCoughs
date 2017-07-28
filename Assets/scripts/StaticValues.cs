@@ -7,6 +7,7 @@ public class StaticValues : MonoBehaviour
     public static StaticValues _instance;
     public GameObject bundlePrefab;
     public Transform bundlesTransform;
+    public Transform graveyard;
 
     void Awake()
     {

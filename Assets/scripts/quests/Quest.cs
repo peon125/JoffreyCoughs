@@ -24,5 +24,5 @@ public abstract class Quest : MonoBehaviour
         Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);
     }
 
-    public abstract void CheckOnQuest(Person person);
+    public abstract void CheckOnQuest(InteractableObject person);
 }
