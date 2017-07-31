@@ -9,6 +9,7 @@ public class InteractableObject : MonoBehaviour
     public string thingToSay;
     public float sellingPriceModifier, buyingPriceModifier;
     public bool isBusy;
+    public bool inspectable, challangable, tradable, talkable;
 
     public string _name, description;
     public bool randomizeAfterSleep;

@@ -12,10 +12,10 @@ public class CameraWorldMovement : MonoBehaviour
     {
         transform.position = playerToFollow.position + offset;
 
-        transform.position = new Vector3(
-            Mathf.Clamp(transform.position.x, -boundaries.x, boundaries.x),
-            Mathf.Clamp(transform.position.y, -boundaries.y, boundaries.y),
-            transform.position.z
-        );
+        //transform.position = new Vector3(
+        //    Mathf.Clamp(transform.position.x, -boundaries.x, boundaries.x),
+        //    Mathf.Clamp(transform.position.y, -boundaries.y, boundaries.y),
+        //    transform.position.z
+        //);
     }
 }

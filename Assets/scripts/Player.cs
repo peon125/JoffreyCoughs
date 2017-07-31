@@ -26,7 +26,8 @@ public class Player : Person
     public QuestsController questsController;
     public EquipmentController equipmentController;
 
-    public Transform enemies;
+    public GameObject inspectKey, challangeKey, tradeKey, talkingKey;
+    public Transform interactables;
     public float radius;
     public InteractableObject target;
     public int maxHp;
@@ -197,10 +198,10 @@ public class Player : Person
 
     void LookingForTheNearestInteractiveObject()
     {
-        foreach (Transform enemy in enemies)
+        foreach (Transform interactableObject in interactables)
         {
-            if (Vector3.Distance(enemy.position, transform.position) < radius)
-                nearbyObjects.Add(enemy);               
+            if (Vector3.Distance(interactableObject.position, transform.position) < radius)
+                nearbyObjects.Add(interactableObject);               
         }
 
         if (nearbyObjects.Count != 0)
@@ -219,10 +220,31 @@ public class Player : Person
             if (target != nearest.GetComponent<InteractableObject>() && target != null)
             {
                 target.GetComponent<SpriteRenderer>().color = Color.white;
-               
+
             }
+
             target = nearest.GetComponent<InteractableObject>();
             target.GetComponent<SpriteRenderer>().color = Color.green;
+
+            if (target.inspectable)
+                inspectKey.SetActive(true);
+            else
+                inspectKey.SetActive(false);
+
+            if (target.challangable)
+                challangeKey.SetActive(true);
+            else
+                challangeKey.SetActive(false);
+
+            if (target.tradable)
+                tradeKey.SetActive(true);
+            else
+                tradeKey.SetActive(false);
+
+            if (target.talkable)
+                talkingKey.SetActive(true);
+            else
+                talkingKey.SetActive(false);
         }
         else
         {
@@ -230,6 +252,11 @@ public class Player : Person
             {
                 target.GetComponent<SpriteRenderer>().color = Color.white;
                 target = null;
+
+                inspectKey.SetActive(false);
+                challangeKey.SetActive(false);
+                tradeKey.SetActive(false);
+                talkingKey.SetActive(false);
             }
         }
 

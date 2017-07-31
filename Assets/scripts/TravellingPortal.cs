@@ -4,12 +4,15 @@ using UnityEngine;
 
 public class TravellingPortal : MonoBehaviour
 {
-    public TravellingController myController;
+    public string place;
     public Vector3 whereToResp;
-    public bool playerWantsToTravel;
 
     void OnTriggerEnter2D(Collider2D collider)
     {
-        playerWantsToTravel = true;
+        if (collider.GetComponent<Player>())
+        {
+            collider.GetComponent<Player>().interactables = TravellingController._instance.GetInteractables(place);
+            collider.transform.position = whereToResp;
+        }
     }
 }

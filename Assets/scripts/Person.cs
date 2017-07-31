@@ -10,6 +10,8 @@ public class Person : InteractableObject
 
     public Sprite[] moveSprites;
     public float moveSpriteSpeed;
+    public bool chasesThePlayer;
+    public float chasingThePlayerDistance;
     protected float moveSpriteTimer = 0f;
     protected float _moveSpriteSpeed;
     protected int moveI = 0;
@@ -27,6 +29,28 @@ public class Person : InteractableObject
         _moveSpriteSpeed = moveSpriteSpeed;
         startPos = transform.localPosition;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    protected void ChasingThePlayer()
+    {
+        if (!chasesThePlayer)
+            return;
+
+        bool b = Vector3.Distance(
+         new Vector3(transform.position.x, transform.position.y, 0),
+         new Vector3(Player._instance.transform.position.x, Player._instance.transform.position.y, 0)
+         ) <= chasingThePlayerDistance;
+
+        if (b)
+        {
+            canMove = false;
+            
+
+        }
+        else
+        {
+            canMove = true;
+        }
     }
 
     protected void ChangeSprite()
