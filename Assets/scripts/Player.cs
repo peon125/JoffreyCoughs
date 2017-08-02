@@ -70,9 +70,9 @@ public class Player : Person
             ChangeSprite();
 
             rb.velocity = new Vector2(
-                Input.GetAxis("Horizontal1") * speed,
-                Input.GetAxis("Vertical1") * speed
-            );
+                Input.GetAxis("Horizontal1"),
+                Input.GetAxis("Vertical1") 
+            ).normalized * speed;
 
             if (!isBusy)
                 LookingForTheNearestInteractiveObject();

@@ -12,6 +12,7 @@ public class Person : InteractableObject
     public float moveSpriteSpeed;
     public bool chasesThePlayer;
     public float chasingThePlayerDistance;
+    public bool randomVelocity;
     protected float moveSpriteTimer = 0f;
     protected float _moveSpriteSpeed;
     protected int moveI = 0;
@@ -43,13 +44,15 @@ public class Person : InteractableObject
 
         if (b)
         {
-            canMove = false;
-            
+            randomVelocity = false;
 
+            Vector3 move = (Player._instance.transform.position - transform.position).normalized;
+
+            rb.velocity = move * speed;
         }
         else
         {
-            canMove = true;
+            randomVelocity = true;
         }
     }
 
@@ -87,7 +90,7 @@ public class Person : InteractableObject
 
     protected void Move()
     {
-        if (canMove)
+        if (randomVelocity)
         {
             float x = 0, y = 0;
 

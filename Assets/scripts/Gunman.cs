@@ -6,6 +6,8 @@ public class Gunman : Person
 {
     void Update()
     {
+        ChasingThePlayer();
+
         if (!isBusy && doMove)
         {
             ChangeSprite();
