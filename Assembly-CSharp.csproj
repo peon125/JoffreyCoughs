@@ -72,9 +72,6 @@
      <Compile Include="Assets\scripts\quests\Quest.cs" />
      <Compile Include="Assets\scripts\quests\QuestsController.cs" />
      <Compile Include="Assets\scripts\quests\TalkToAStranger.cs" />
- <Reference Include="UnityEngine.Advertisements">
- <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/Advertisements/UnityEngine.Advertisements.dll</HintPath>
- </Reference>
  <Reference Include="UnityEngine.UI">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
@@ -89,9 +86,6 @@
  </Reference>
  <Reference Include="UnityEngine.HoloLens">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityHoloLens/RuntimeEditor/UnityEngine.HoloLens.dll</HintPath>
- </Reference>
- <Reference Include="UnityEngine.Purchasing">
- <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityPurchasing/UnityEngine.Purchasing.dll</HintPath>
  </Reference>
  <Reference Include="UnityEngine.VR">
  <HintPath>D:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/UnityVR/RuntimeEditor/UnityEngine.VR.dll</HintPath>

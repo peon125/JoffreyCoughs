@@ -11,6 +11,8 @@ public abstract class Quest : MonoBehaviour
     public int allObjectives;
     public int completedObjectives;
     public string[] thingsToSay;
+    //public string[] questReactions;
+    //public string chosenReaction;
     public bool[] whatGoesToQuestLog;
     public string[] whatToPutIntoQuestTrack;
     public bool onQuest;
@@ -24,5 +26,5 @@ public abstract class Quest : MonoBehaviour
         Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);
     }
 
-    public abstract void CheckOnQuest(InteractableObject person);
+    public abstract int CheckOnQuest(InteractableObject person);
 }

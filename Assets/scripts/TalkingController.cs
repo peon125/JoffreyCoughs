@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -8,6 +7,7 @@ public class TalkingController : UiElement
     public GameObject arrow;
     public Image spriteRenderer;
     public Text text;
+    public Quest questBeingTalkedAbout;
     public float speed, waitTime;
     public float arrowFrequency;
     bool doSpeak = false;
@@ -113,7 +113,6 @@ public class TalkingController : UiElement
 
         text.text = "";
 
-
         if (question.Length > limit)
         {
             restOfQuestion = question.Substring(limit);
@@ -131,7 +130,7 @@ public class TalkingController : UiElement
         spriteRenderer.sprite = target.speakerSprite;
     }
 
-    IEnumerator OpenDialogue(string s)
+    protected IEnumerator OpenDialogue(string s)
     {
         Open(true);
         way = 1;

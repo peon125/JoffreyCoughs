@@ -224,6 +224,11 @@ public class Player : Person
             }
 
             target = nearest.GetComponent<InteractableObject>();
+            target.transform.position = new Vector3(
+                target.transform.position.x,
+                target.transform.position.y, 
+                -500
+                );
             target.GetComponent<SpriteRenderer>().color = Color.green;
 
             if (target.inspectable)

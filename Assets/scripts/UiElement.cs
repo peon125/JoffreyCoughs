@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -13,7 +12,7 @@ public class UiElement : MonoBehaviour
     protected bool opened = false;
     protected InteractableObject target;
 
-    public static void MoveObjects(int axisX, int axisY, GameObject gameObject, int way, float min, float max, float time)
+    public static void MoveObjects(float axisX, float axisY, GameObject gameObject, int way, float min, float max, float time)
     {
         if (way != 0)
         {
@@ -38,7 +37,11 @@ public class UiElement : MonoBehaviour
             );
         }
     }
-
+    
+    //In windows in the game I created ui lists which have constant number of shown objects 
+    //(elements are already created, and are children of the parameter Transform list).
+    //Parameter int currentShift is used to count which object of the array is currently selected
+    //(number of a element of a ui list isn't always equal a element of the array to which it refers).
     public static void ScrollAList(Transform list, Item[] items, ref int iterator, int way, ref int currentShift)
     {
         if (items.Length <= list.childCount)
@@ -92,6 +95,7 @@ public class UiElement : MonoBehaviour
         }
     }
 
+    //I found necessery creating two seperate methods for Item arrays and Quest arrays. They can't 
     public static void ScrollAList(Transform list, Quest[] items, ref int iterator, int way, ref int currentShift)
     {
         if (items.Length <= list.childCount)
@@ -145,6 +149,14 @@ public class UiElement : MonoBehaviour
         }
     }
 
+    protected void Open(bool b)
+    {
+        opened = b;
+
+        foreach (GameObject go in stuff)
+            go.SetActive(b);
+    }
+
     protected IEnumerator OpenDialogue(bool playerIsBusyUsingIt)
     {
         Open(true);
@@ -157,7 +169,7 @@ public class UiElement : MonoBehaviour
         way = 0;
     }
 
-    protected IEnumerator CloseDialogue(Transform stuff)
+    protected IEnumerator CloseDialogue(Transform transform)
     {
         way = -1;
 
@@ -165,21 +177,13 @@ public class UiElement : MonoBehaviour
 
         Open(false);
 
-        stuff.transform.localPosition = new Vector3(
-            stuff.transform.localPosition.x,
+        transform.transform.localPosition = new Vector3(
+            transform.transform.localPosition.x,
             yStart,
-            stuff.transform.localPosition.z
+            transform.transform.localPosition.z
         );
 
         Player._instance.isBusy = false;
         way = 0;
-    }
-
-    protected void Open(bool b)
-    {
-        opened = b;
-
-        foreach (GameObject go in stuff)
-            go.SetActive(b);
     }
 }
