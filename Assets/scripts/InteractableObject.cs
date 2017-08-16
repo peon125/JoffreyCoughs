@@ -2,14 +2,13 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class InteractableObject : MonoBehaviour
+public abstract class InteractableObject : MonoBehaviour
 {
     public List<Item> items;
     public Sprite speakerSprite;
     public string thingToSay;
     public float sellingPriceModifier, buyingPriceModifier;
     public bool isBusy;
-    public bool inspectable, challangable, tradable, talkable;
 
     public string _name, description;
     public bool randomizeAfterSleep;
@@ -82,4 +81,6 @@ public class InteractableObject : MonoBehaviour
         foreach (Transform heart in heartsSpawn)
             Destroy(heart.gameObject);
     }
+
+    public abstract void Interact();
 }

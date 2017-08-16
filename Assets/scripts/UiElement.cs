@@ -37,11 +37,7 @@ public class UiElement : MonoBehaviour
             );
         }
     }
-    
-    //In windows in the game I created ui lists which have constant number of shown objects 
-    //(elements are already created, and are children of the parameter Transform list).
-    //Parameter int currentShift is used to count which object of the array is currently selected
-    //(number of a element of a ui list isn't always equal a element of the array to which it refers).
+
     public static void ScrollAList(Transform list, Item[] items, ref int iterator, int way, ref int currentShift)
     {
         if (items.Length <= list.childCount)
@@ -95,7 +91,65 @@ public class UiElement : MonoBehaviour
         }
     }
 
-    //I found necessery creating two seperate methods for Item arrays and Quest arrays. They can't 
+    public static void ScrollAList(Transform list, string[] items, ref int iterator, int way, ref int currentShift)
+    {
+        if (items.Length <= list.childCount)
+        {
+            if (items.Length != 0)
+            {
+                if (iterator < 0)
+                    iterator = items.Length - 1;
+                iterator %= items.Length;
+            }
+            else
+                iterator = items.Length + 1;
+
+            return;
+        }
+
+        if (way == -1)
+        {
+            if (currentShift != items.Length - list.childCount && iterator == list.childCount - 1)
+            {
+                currentShift += 1;
+
+                iterator -= 1;
+            }
+            else if (currentShift == items.Length - list.childCount && iterator == list.childCount)
+            {
+                currentShift = 0;
+
+                iterator = 0;
+            }
+        }
+        else if (way == 1)
+        {
+            if (currentShift != 0 && iterator == 0)
+            {
+                currentShift -= 1;
+
+                iterator += 1;
+            }
+            else if (currentShift == 0 && iterator == -1)
+            {
+                currentShift = items.Length - list.childCount;
+
+                iterator = list.childCount - 1;
+            }
+        }
+
+        for (int j = 0; j < items.Length; j++)
+        {
+            list.GetChild(j).GetComponent<Text>().text = items[j + currentShift];
+        }
+
+        for (int i = items.Length; i < list.childCount; i++)
+        {
+            list.GetChild(i).GetComponent<Text>().text = "---";
+        }
+    }
+
+    // jebnąc toStringem i typem generycznym 
     public static void ScrollAList(Transform list, Quest[] items, ref int iterator, int way, ref int currentShift)
     {
         if (items.Length <= list.childCount)

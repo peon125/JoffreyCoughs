@@ -7,13 +7,16 @@ public class TalkingController : UiElement
     public GameObject arrow;
     public Image spriteRenderer;
     public Text text;
+    public Transform reactionsTransform;
     public Quest questBeingTalkedAbout;
     public float speed, waitTime;
     public float arrowFrequency;
-    bool doSpeak = false;
+    bool doSpeak = false, reactNow =false;
     public int limit;
+    int reactionsIterator, reactionsIteratorShift;
     float timer = 0f, arrowTimer = 0f;
     string question, restOfQuestion;
+    bool leftVerticalAxisInUse = false;
 
     void Update()
     {
@@ -24,6 +27,15 @@ public class TalkingController : UiElement
         FlashingArrow();
 
         KeyHandling();
+
+
+        for (int i = 0; i < reactionsTransform.childCount && reactNow; i++)
+        {
+            if (i == reactionsIterator)
+                reactionsTransform.GetChild(i).GetComponent<Text>().color = selectedColor;
+            else
+                reactionsTransform.GetChild(i).GetComponent<Text>().color = unselectedColor;
+        }
     }
 
     void Speaking()
@@ -47,7 +59,7 @@ public class TalkingController : UiElement
 
     void FlashingArrow()
     {
-        if (restOfQuestion != "")
+        if (restOfQuestion != "" && !doSpeak)
         {
             arrow.SetActive(true);
 
@@ -76,12 +88,23 @@ public class TalkingController : UiElement
     {
         if (opened && way == 0)
         {
-            if (Input.anyKeyDown)
+            if (Input.anyKeyDown && !reactNow)
             {
-                if (!doSpeak && restOfQuestion != "")
+                if (!doSpeak && restOfQuestion != "") /////
                 {
-                    Say(restOfQuestion);
+                        Say(restOfQuestion);
+                        Player._instance.EndOfTalk(target);
+
+                        StartCoroutine(CloseDialogue(""));
                     return;
+                }
+                else if (!doSpeak && restOfQuestion == "")
+                {
+                    if (questBeingTalkedAbout != null && questBeingTalkedAbout.reactionRequired)
+                    {
+                        StartReacting();
+                        return;
+                    }
                 }
 
                 if (doSpeak)
@@ -93,14 +116,11 @@ public class TalkingController : UiElement
                     doSpeak = false;
                     return;
                 }
+            } else
 
-                if (!doSpeak && restOfQuestion == "")
-                {
-                    Player._instance.EndOfTalk(target);
-
-                    StartCoroutine(CloseDialogue(""));
-                    return;
-                }
+            if (reactNow)
+            {
+                React();
             }
         }
     }
@@ -121,6 +141,74 @@ public class TalkingController : UiElement
         }
         else
             restOfQuestion = "";
+    }
+
+    void StartReacting()
+    {
+        Say(questBeingTalkedAbout.reactionQuestion);
+
+        for (int j = 0; j < questBeingTalkedAbout.questReactions.Length; j++)
+        {
+            reactionsTransform.GetChild(j).GetComponent<Text>().text = questBeingTalkedAbout.questReactions[j + reactionsIteratorShift];
+        }
+
+        for (int i = questBeingTalkedAbout.questReactions.Length; i < reactionsTransform.childCount; i++)
+        {
+            reactionsTransform.GetChild(i).GetComponent<Text>().text = "---";
+        }
+
+        reactionsTransform.gameObject.SetActive(true);
+        reactionsIterator = 0;
+        reactNow = true;
+    }
+
+    void React()
+    {
+        if (Input.GetAxisRaw("Vertical1") != 0)
+        {
+            if (!leftVerticalAxisInUse)
+            {
+                if (Input.GetAxisRaw("Vertical1") > 0)
+                {
+                    reactionsIterator--;
+
+                    ScrollAList(reactionsTransform, questBeingTalkedAbout.questReactions, ref reactionsIterator, 1, ref reactionsIteratorShift);
+                }
+                else if (Input.GetAxisRaw("Vertical1") < 0)
+                {
+                    reactionsIterator++;
+
+                    ScrollAList(reactionsTransform, questBeingTalkedAbout.questReactions, ref reactionsIterator, -1, ref reactionsIteratorShift);
+                }
+
+                leftVerticalAxisInUse = true;
+            }
+        }
+        else
+            leftVerticalAxisInUse = false;
+
+        
+
+
+
+
+        if(Input.GetButtonDown("Submit"))
+        {
+            questBeingTalkedAbout.Reacted(reactionsIterator + reactionsIteratorShift);
+
+            reactNow = false;
+
+            Player._instance.EndOfTalk(target);
+
+            StartCoroutine(CloseDialogue(""));
+
+            Debug.Log("dab on them haters!!!");
+        }
+
+
+
+
+
     }
 
     public void StartTalking(string s)
@@ -146,7 +234,11 @@ public class TalkingController : UiElement
 
     protected IEnumerator CloseDialogue(string s)
     {
+        questBeingTalkedAbout = null;
+        reactionsTransform.gameObject.SetActive(false);
+        reactionsIterator = 0;
         way = -1;
+        doSpeak = false;
 
         yield return new WaitForSeconds(timeToWait);
 

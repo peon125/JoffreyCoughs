@@ -157,4 +157,9 @@ public class Person : InteractableObject
         transform.parent = StaticValues._instance.graveyard;
         transform.localPosition = Vector3.zero;
     }
+
+    public override void Interact()
+    {
+        Debug.Log(this.name + " person");
+    }
 }

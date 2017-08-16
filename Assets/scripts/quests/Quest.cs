@@ -11,13 +11,15 @@ public abstract class Quest : MonoBehaviour
     public int allObjectives;
     public int completedObjectives;
     public string[] thingsToSay;
-    //public string[] questReactions;
-    //public string chosenReaction;
+    public string reactionQuestion;
+    public string[] questReactions;
+    public string chosenReaction;
     public bool[] whatGoesToQuestLog;
     public string[] whatToPutIntoQuestTrack;
     public bool onQuest;
     public int questStadium = 0;
     public string questTrackContent;
+    public bool reactionRequired;
 
     public void ActivateTheQuest()
     {
@@ -27,4 +29,6 @@ public abstract class Quest : MonoBehaviour
     }
 
     public abstract int CheckOnQuest(InteractableObject person);
+
+    public abstract void Reacted(int i);
 }

@@ -231,25 +231,10 @@ public class Player : Person
                 );
             target.GetComponent<SpriteRenderer>().color = Color.green;
 
-            if (target.inspectable)
                 inspectKey.SetActive(true);
-            else
-                inspectKey.SetActive(false);
-
-            if (target.challangable)
                 challangeKey.SetActive(true);
-            else
-                challangeKey.SetActive(false);
-
-            if (target.tradable)
                 tradeKey.SetActive(true);
-            else
-                tradeKey.SetActive(false);
-
-            if (target.talkable)
                 talkingKey.SetActive(true);
-            else
-                talkingKey.SetActive(false);
         }
         else
         {

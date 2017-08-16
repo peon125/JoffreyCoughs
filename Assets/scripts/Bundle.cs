@@ -14,4 +14,9 @@ public class Bundle : InteractableObject
         if (timer >= timeToBeDestroyed)
             Destroy(gameObject);
     }
+
+    public override void Interact()
+    {
+        Debug.Log(this.name + " bundle");
+    }
 }

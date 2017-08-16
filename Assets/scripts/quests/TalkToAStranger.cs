@@ -1,4 +1,5 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -13,6 +14,8 @@ public class TalkToAStranger : Quest
         {
             person.thingToSay = thingsToSay[0];
             questStadium = 1;
+            reactionRequired = true;
+            Player._instance.talkingController.questBeingTalkedAbout = this;
 
             return 1;
         }
@@ -45,6 +48,22 @@ public class TalkToAStranger : Quest
         }
 
         return 999;
+    }
+
+    public override void Reacted(int reaction)
+    {
+        if (reaction == 0)
+        {
+            ActivateTheQuest();
+            Player._instance.talkEnded += CheckIfObjectiveIsCompleted;
+            questTrackContent = whatToPutIntoQuestTrack[0];
+        }
+        else if (reaction == 1)
+        {
+            questStadium = 0;
+        }
+
+        reactionRequired = false;
     }
 
     void CheckIfObjectiveIsCompleted(InteractableObject speaker)
