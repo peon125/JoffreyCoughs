@@ -25,9 +25,10 @@ public class Player : Person
     public ShootingController shootingController;
     public QuestsController questsController;
     public EquipmentController equipmentController;
+    public TravellingController travellingController;
 
     public GameObject inspectKey, challangeKey, tradeKey, talkingKey;
-    public Transform interactables;
+    public GameObject[] interactables;
     public float radius;
     public InteractableObject target;
     public int maxHp;
@@ -38,7 +39,7 @@ public class Player : Person
     public float feedTime;
     float feedTimer;
 
-    List<Transform> nearbyObjects = new List<Transform>();
+    List<GameObject> nearbyObjects = new List<GameObject>();
     Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
 
     void Awake()
@@ -49,6 +50,7 @@ public class Player : Person
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        DontDestroyOnLoad(this);
 
         for (int i = 0; i < hp; i++)
         {
@@ -90,6 +92,9 @@ public class Player : Person
 
                 if (Input.GetButtonDown("Inspect"))
                     target.LetsSee();
+
+                if (Input.GetButtonDown("Interact"))
+                    target.Interact();
             }
 
             if(Input.GetButtonDown("Equipment"))
@@ -105,7 +110,7 @@ public class Player : Person
         transform.position = new Vector3(
             transform.position.x,
             transform.position.y,
-            transform.position.y / 10000
+            transform.position.y + 0
         );
 	} 
 
@@ -198,21 +203,32 @@ public class Player : Person
 
     void LookingForTheNearestInteractiveObject()
     {
-        foreach (Transform interactableObject in interactables)
+        Vector3 playerPostion = new Vector3(transform.position.x, transform.position.y, 0);
+
+        foreach (GameObject interactableObject in interactables)
         {
-            if (Vector3.Distance(interactableObject.position, transform.position) < radius)
+            Vector3 interactableObjectPosition = new Vector3(interactableObject.transform.position.x, interactableObject.transform.position.y, 0);
+
+            if (Vector3.Distance(interactableObjectPosition, playerPostion) < interactableObject.GetComponent<InteractableObject>().howCloseINeedToApproach)
                 nearbyObjects.Add(interactableObject);               
         }
 
         if (nearbyObjects.Count != 0)
         {
-            Transform nearest = nearbyObjects[0];
+            GameObject nearest = nearbyObjects[0];
+
+            Vector3 nearestObjectPositon = new Vector3(nearest.transform.position.x, nearest.transform.position.y, 0);
 
             if (nearbyObjects.Count > 0)
             {
                 for (int i = 1; i < nearbyObjects.Count; i++)
                 {
-                    if (Vector3.Distance(nearbyObjects[i].position, transform.position) < Vector3.Distance(nearest.position, transform.position))
+                    Vector3 targetPosition;
+
+                    targetPosition = new Vector3(nearbyObjects[i].transform.position.x, nearbyObjects[i].transform.position.y, 0);
+
+
+                    if (Vector3.Distance(targetPosition, playerPostion) < Vector3.Distance(nearestObjectPositon, playerPostion))
                         nearest = nearbyObjects[i];
                 }
             }
@@ -224,11 +240,12 @@ public class Player : Person
             }
 
             target = nearest.GetComponent<InteractableObject>();
-            target.transform.position = new Vector3(
-                target.transform.position.x,
-                target.transform.position.y, 
-                -500
-                );
+            //target.transform.position = new Vector3(
+            //    target.transform.position.x,
+            //    target.transform.position.y, 
+            //    0
+            //    );
+
             target.GetComponent<SpriteRenderer>().color = Color.green;
 
                 inspectKey.SetActive(true);

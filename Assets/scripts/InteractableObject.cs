@@ -18,6 +18,7 @@ public abstract class InteractableObject : MonoBehaviour
 
     public Gun gun;
     public int hp, maxNumberOfItems;
+    public int howCloseINeedToApproach;
 
     public void DamageTaken()
     {

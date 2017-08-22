@@ -5,8 +5,7 @@ using UnityEngine;
 public class TravellingController : MonoBehaviour
 {
     public static TravellingController _instance;
-    public Transform desertInteractables;
-    public Transform caveInteractables;
+    public int whichPortalToResp;
 
     void Awake()
     {
@@ -15,15 +14,6 @@ public class TravellingController : MonoBehaviour
 
     public Transform GetInteractables(string area)
     {
-        switch (area)
-        {
-            case "desert":
-                return desertInteractables;
-                break;
-            case "cave":
-                return caveInteractables;
-                break;
-        }
 
         return null;
     }
