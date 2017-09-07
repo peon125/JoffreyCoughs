@@ -90,15 +90,17 @@ public class TalkingController : UiElement
         {
             if (Input.anyKeyDown && !reactNow)
             {
-                if (!doSpeak && restOfQuestion != "") /////
+                Debug.Log(!doSpeak + " "+(restOfQuestion == ""));
+                if (!doSpeak && restOfQuestion == "") /////
                 {
-                        Say(restOfQuestion);
+                    
+                    Say(restOfQuestion);
                         Player._instance.EndOfTalk(target);
 
                         StartCoroutine(CloseDialogue(""));
                     return;
                 }
-                else if (!doSpeak && restOfQuestion == "")
+                else if (!doSpeak && restOfQuestion != "")
                 {
                     if (questBeingTalkedAbout != null && questBeingTalkedAbout.reactionRequired)
                     {

@@ -39,16 +39,23 @@ public class Player : Person
     public float feedTime;
     float feedTimer;
 
+    public AreaHandler areaICurrentlyAm;
+
     List<GameObject> nearbyObjects = new List<GameObject>();
     Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
 
     void Awake()
     {
-        _instance = this; 
+        Debug.Log(Player._instance == null);
+        if (Player._instance == null)
+        _instance = this;
+        else
+            Destroy(transform.parent.gameObject);
     }
 
     void Start()
     {
+        DontDestroyOnLoad(transform.parent.gameObject);
         rb = GetComponent<Rigidbody2D>();
         DontDestroyOnLoad(this);
 
@@ -76,8 +83,7 @@ public class Player : Person
                 Input.GetAxis("Vertical1") 
             ).normalized * speed;
 
-            if (!isBusy)
-                LookingForTheNearestInteractiveObject();
+            LookingForTheNearestInteractiveObject();
 
             if (target != null)
             {
@@ -107,10 +113,10 @@ public class Player : Person
             rb.velocity = Vector2.zero;
 
 
-        transform.position = new Vector3(
-            transform.position.x,
-            transform.position.y,
-            transform.position.y + 0
+        transform.localPosition = new Vector3(
+            transform.localPosition.x,
+            transform.localPosition.y,
+            transform.localPosition.y + 0
         );
 	} 
 

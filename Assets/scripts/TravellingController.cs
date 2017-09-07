@@ -1,20 +1,16 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class TravellingController : MonoBehaviour
 {
-    public static TravellingController _instance;
-    public int whichPortalToResp;
+    public string whereIComeFrom;
 
-    void Awake()
+    public void Travel(string whereToGo)
     {
-        _instance = this;
-    }
+        //whereIComeFrom = Player._instance.areaICurrentlyAm.areaName;
 
-    public Transform GetInteractables(string area)
-    {
-
-        return null;
+        SceneManager.LoadScene(whereToGo);
     }
 }

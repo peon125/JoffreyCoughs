@@ -29,10 +29,11 @@ public class Gunman : Person
             rb.velocity = Vector3.zero;
         }
 
-        transform.position = new Vector3(
-            transform.position.x,
-            transform.position.y,
-            transform.position.y / 10000
+        transform.localPosition = new Vector3(
+            transform.localPosition.x,
+            transform.localPosition.y,
+            //transform.position.y / 10000
+            transform.localPosition.y 
         );
     }
 }

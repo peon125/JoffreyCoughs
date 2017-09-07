@@ -9,13 +9,16 @@ public class TravellingPortal : MonoBehaviour
     public string place;
     public Vector3 whereToResp;
     public Text text;
+    public Image image;
     public bool vertical, horizontal;
     public int portalToRespOn;
     float colorTimer = 0.5f;
 
     void Update()
     {
-        text.color = Color.Lerp(Color.green, Color.white, Mathf.PingPong(Time.time / colorTimer, 1));
+        text.color = Color.Lerp(Color.blue, Color.white, Mathf.PingPong(Time.time / colorTimer, 1));
+        image.color = Color.Lerp(Color.white, Color.blue, Mathf.PingPong(Time.time / colorTimer, 1));
+        image.color = new Color(image.color.r, image.color.g, image.color.b, 0.5f);
 
         if (vertical)
             text.transform.position = new Vector3(
@@ -36,9 +39,7 @@ public class TravellingPortal : MonoBehaviour
     {
         if (collider.GetComponent<Player>())
         {
-            Player._instance.travellingController.whichPortalToResp = portalToRespOn;
-            //SceneManager.LoadScene(place);
-            Debug.Log("asdfg");
+            Player._instance.travellingController.Travel(place);
         }
     }
 }

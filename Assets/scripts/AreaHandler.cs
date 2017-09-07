@@ -4,14 +4,32 @@ using UnityEngine;
 
 public class AreaHandler : MonoBehaviour
 {
-    public GameObject[] interactables;
-    public Transform[] portals;
+    public static AreaHandler areaWhereICurrentlyAm;
+    public string areaName;
+    public Transform portals;
+    public Transform resps;
+
+    void OnLevelWasLoaded()
+    {
+        //areaWhereICurrentlyAm = this;
+    }
 
     void Start()
     {
-        interactables = GameObject.FindGameObjectsWithTag("interactable");
+        int i = 0;
 
-        //Player._instance.transform.position = portals[Player._instance.travellingController.whichPortalToResp].position;
-        Player._instance.interactables = interactables;
+        for (i = 0; i < resps.childCount; i++)
+        {
+            if (resps.GetChild(i).name == Player._instance.travellingController.whereIComeFrom + "Resp")
+                break;
+        }
+
+        Player._instance.transform.localPosition = resps.GetChild(i).localPosition;
+
+        Player._instance.areaICurrentlyAm = this;
+
+        Player._instance.interactables = GameObject.FindGameObjectsWithTag("interactable");
+
+        Player._instance.travellingController.whereIComeFrom = areaName;
     }
 }
