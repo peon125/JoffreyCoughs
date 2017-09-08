@@ -47,6 +47,8 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\GameController.cs" />
+     <Compile Include="Assets\Painting.cs" />
+     <Compile Include="Assets\Plant.cs" />
      <Compile Include="Assets\scripts\AreaHandler.cs" />
      <Compile Include="Assets\scripts\Bundle.cs" />
      <Compile Include="Assets\scripts\CameraWorldMovement.cs" />

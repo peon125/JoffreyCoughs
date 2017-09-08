@@ -20,6 +20,8 @@ public abstract class InteractableObject : MonoBehaviour
     public int hp, maxNumberOfItems;
     public int howCloseINeedToApproach;
 
+    public bool notInteractable;
+
     public void DamageTaken()
     {
         Destroy(heartsSpawn.GetChild(0).gameObject);

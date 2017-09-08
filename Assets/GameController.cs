@@ -14,8 +14,6 @@ public class GameController : MonoBehaviour
 
             DontDestroyOnLoad(gameObject);
         }
-        else
-            Destroy(gameObject);
     }
 
 }

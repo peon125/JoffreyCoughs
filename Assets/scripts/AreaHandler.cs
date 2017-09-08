@@ -9,22 +9,20 @@ public class AreaHandler : MonoBehaviour
     public Transform portals;
     public Transform resps;
 
-    void OnLevelWasLoaded()
-    {
-        //areaWhereICurrentlyAm = this;
-    }
-
     void Start()
     {
-        int i = 0;
-
-        for (i = 0; i < resps.childCount; i++)
+        if (Player._instance.travellingController.whereIComeFrom != "")
         {
-            if (resps.GetChild(i).name == Player._instance.travellingController.whereIComeFrom + "Resp")
-                break;
-        }
+            int i = 0;
 
-        Player._instance.transform.localPosition = resps.GetChild(i).localPosition;
+            for (i = 0; i < resps.childCount; i++)
+            {
+                if (resps.GetChild(i).name == Player._instance.travellingController.whereIComeFrom + "Resp")
+                    break;
+            }
+
+            Player._instance.transform.localPosition = resps.GetChild(i).localPosition;
+        }
 
         Player._instance.areaICurrentlyAm = this;
 

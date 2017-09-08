@@ -46,7 +46,6 @@ public class Player : Person
 
     void Awake()
     {
-        Debug.Log(Player._instance == null);
         if (Player._instance == null)
         _instance = this;
         else
@@ -99,7 +98,7 @@ public class Player : Person
                 if (Input.GetButtonDown("Inspect"))
                     target.LetsSee();
 
-                if (Input.GetButtonDown("Interact"))
+                if (Input.GetButtonDown("Interact") && !target.GetComponent<InteractableObject>().notInteractable)
                     target.Interact();
             }
 
@@ -251,10 +250,12 @@ public class Player : Person
             //    target.transform.position.y, 
             //    0
             //    );
+            if (!target.GetComponent<InteractableObject>().notInteractable)
+                target.GetComponent<SpriteRenderer>().color = Color.green;
+            else
+                target.GetComponent<SpriteRenderer>().color = Color.red;
 
-            target.GetComponent<SpriteRenderer>().color = Color.green;
-
-                inspectKey.SetActive(true);
+            inspectKey.SetActive(true);
                 challangeKey.SetActive(true);
                 tradeKey.SetActive(true);
                 talkingKey.SetActive(true);

@@ -12,7 +12,5 @@ public class Gun : Item
         Player._instance.items.Remove(this);
         Player._instance.items.Add(Player._instance.gun);
         Player._instance.gun = this;
-
-        Debug.Log("asdF");
     }
 }
