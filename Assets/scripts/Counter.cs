@@ -21,6 +21,9 @@ public class Counter : MonoBehaviour
 
     void Update()
     {
+        if (Input.anyKeyDown && timer - 1 > 0)
+            timer -= 1;
+
         timer -= Time.deltaTime;
 
         counter.text = ((int)timer).ToString();

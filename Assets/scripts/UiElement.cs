@@ -203,6 +203,67 @@ public class UiElement : MonoBehaviour
         }
     }
 
+    public static void ScrollAList<T>(Transform list, T[] items, ref int iterator, int way, ref int currentShift)
+    {
+        if (items.Length == 0)
+            return;
+
+        if (items.Length <= list.childCount)
+        {
+            if (items.Length != 0)
+            {
+                if (iterator < 0)
+                    iterator = items.Length - 1;
+                iterator %= items.Length;
+            }
+            else
+                iterator = items.Length + 1;
+
+            return;
+        }
+
+        if (way == -1)
+        {
+            if (currentShift != items.Length - list.childCount && iterator == list.childCount - 1)
+            {
+                currentShift += 1;
+
+                iterator -= 1;
+            }
+            else if (currentShift == items.Length - list.childCount && iterator == list.childCount)
+            {
+                currentShift = 0;
+
+                iterator = 0;
+            }
+        }
+        else if (way == 1)
+        {
+            if (currentShift != 0 && iterator == 0)
+            {
+                currentShift -= 1;
+
+                iterator += 1;
+            }
+            else if (currentShift == 0 && iterator == -1)
+            {
+                currentShift = items.Length - list.childCount;
+
+                iterator = list.childCount - 1;
+            }
+        }
+
+        for (int j = 0; j < items.Length; j++)
+        {
+            list.GetChild(j).GetComponent<Text>().text = items[j + currentShift].ToString();
+        }
+
+        for (int i = items.Length; i < list.childCount; i++)
+        {
+            list.GetChild(i).GetComponent<Text>().text = "---";
+        }
+    }
+
     protected void Open(bool b)
     {
         opened = b;

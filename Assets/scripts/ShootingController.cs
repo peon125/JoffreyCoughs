@@ -93,7 +93,7 @@ public class ShootingController : MonoBehaviour
 
         Player._instance.ShootoutOver();
 
-        haHaLooser.GetComponent<Person>().Death();
+        haHaLooser.GetComponent<InteractableObject>().Death();
 
 //        if (haHaLooser == shootingEnemy)
 //            Destroy(haHaLooser);

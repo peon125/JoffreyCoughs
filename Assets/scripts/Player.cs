@@ -27,7 +27,7 @@ public class Player : Person
     public EquipmentController equipmentController;
     public TravellingController travellingController;
 
-    public GameObject inspectKey, challangeKey, tradeKey, talkingKey;
+    public GameObject UIkeys;
     public GameObject[] interactables;
     public float radius;
     public InteractableObject target;
@@ -38,6 +38,8 @@ public class Player : Person
     public int feed;
     public float feedTime;
     float feedTimer;
+
+    float currentSpeed;
 
     public AreaHandler areaICurrentlyAm;
 
@@ -67,6 +69,8 @@ public class Player : Person
         {
             feedTransform.GetChild(i).gameObject.SetActive(true);
         }
+
+        currentSpeed = speed;
     }
 
 	void Update()
@@ -80,7 +84,14 @@ public class Player : Person
             rb.velocity = new Vector2(
                 Input.GetAxis("Horizontal1"),
                 Input.GetAxis("Vertical1") 
-            ).normalized * speed;
+            ).normalized * currentSpeed;
+
+            if (Input.GetButton("Run"))
+            {
+                currentSpeed = speed * 1.5f;
+            }
+            else
+                currentSpeed = speed;
 
             LookingForTheNearestInteractiveObject();
 
@@ -255,10 +266,7 @@ public class Player : Person
             else
                 target.GetComponent<SpriteRenderer>().color = Color.red;
 
-            inspectKey.SetActive(true);
-                challangeKey.SetActive(true);
-                tradeKey.SetActive(true);
-                talkingKey.SetActive(true);
+            UIkeys.SetActive(true);
         }
         else
         {
@@ -267,10 +275,7 @@ public class Player : Person
                 target.GetComponent<SpriteRenderer>().color = Color.white;
                 target = null;
 
-                inspectKey.SetActive(false);
-                challangeKey.SetActive(false);
-                tradeKey.SetActive(false);
-                talkingKey.SetActive(false);
+                UIkeys.SetActive(false);
             }
         }
 

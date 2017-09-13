@@ -7,6 +7,11 @@ public class Plant : InteractableObject
 {
     public override void Interact()
     {
-        
+        Player._instance.talkingController.StartTalking("*swish*");
+    }
+
+    public override void Death()
+    {
+        gameObject.SetActive(false);
     }
 }

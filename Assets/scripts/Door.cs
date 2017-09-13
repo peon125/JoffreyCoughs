@@ -26,8 +26,12 @@ public class Door : InteractableObject
 
     void Update()
     {
-        if (hasKeyInside)
-            notInteractable = false;
+        //if (hasKeyInside)
+        //    notInteractable = true;
     }
 
+    public override void Death()
+    {
+        
+    }
 }

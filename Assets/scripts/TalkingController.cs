@@ -90,7 +90,6 @@ public class TalkingController : UiElement
         {
             if (Input.anyKeyDown && !reactNow)
             {
-                Debug.Log(!doSpeak + " "+(restOfQuestion == ""));
                 if (!doSpeak && restOfQuestion == "") /////
                 {
                     
@@ -129,7 +128,10 @@ public class TalkingController : UiElement
 
     public void Say(string question)
     {
-        this.question = question;
+        if (question != "")
+            this.question = question;
+        else
+            this.question = ">>nothing to say<<";
 
         doSpeak = true;
 
