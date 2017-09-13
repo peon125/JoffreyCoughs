@@ -36,7 +36,7 @@ public class Bundle : InteractableObject
         Debug.Log(this.name + " bundle");
     }
 
-    public override void Death()
+    new public void Death()
     {
         gameObject.SetActive(false);
     }

@@ -142,22 +142,6 @@ public class Person : InteractableObject
             GetComponent<SpriteRenderer>().color = Color.white;
     }
 
-    public override void Death()
-    {
-        GameObject bundle = (GameObject)Instantiate(
-            StaticValues._instance.bundlePrefab,
-            transform.position,
-            StaticValues._instance.bundlePrefab.transform.rotation,
-            StaticValues._instance.bundlesTransform
-            );
-
-        bundle.GetComponent<Bundle>().items = items;
-
-        gameObject.SetActive(false);
-        transform.parent = StaticValues._instance.graveyard;
-        transform.localPosition = Vector3.zero;
-    }
-
     public override void Interact()
     {
         Player._instance.talkingController.StartTalking("Leave me alone!");

@@ -13,7 +13,7 @@ public abstract class InteractableObject : MonoBehaviour
     public string _name, description;
     public bool randomizeAfterSleep;
     public int cash;
-    public GameObject heartPrefab;
+    //public GameObject heartPrefab;
     public Transform heartsSpawn;
 
     public Gun gun;
@@ -65,11 +65,11 @@ public abstract class InteractableObject : MonoBehaviour
         for (int i = 0; i < hp; i++)
         {
             Vector2 pos = new Vector2(
-                -i * (heartPrefab.GetComponent<RectTransform>().sizeDelta.y + 0),
+                -i * (StaticValues._instance.enemyHeartPrefab.GetComponent<RectTransform>().sizeDelta.y + 0),
                 0
             );
 
-            GameObject heart = Instantiate(heartPrefab, heartsSpawn) as GameObject;
+            GameObject heart = Instantiate(StaticValues._instance.enemyHeartPrefab, heartsSpawn) as GameObject;
 
             heart.transform.localPosition = pos;
         }
@@ -85,7 +85,26 @@ public abstract class InteractableObject : MonoBehaviour
             Destroy(heart.gameObject);
     }
 
+    public override string ToString()
+    {
+        return _name;
+    }
+
     public abstract void Interact();
 
-    public abstract void Death();
+    public void Death()
+    {
+        if (items.Count > 0)
+        {
+            GameObject bundle = (GameObject)Instantiate(
+                StaticValues._instance.bundlePrefab,
+                transform.position,
+                StaticValues._instance.bundlePrefab.transform.rotation
+                );
+
+            bundle.GetComponent<Bundle>().items = items;
+        }
+
+        gameObject.SetActive(false);
+    }
 }

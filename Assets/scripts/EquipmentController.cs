@@ -82,7 +82,7 @@ public class EquipmentController : UiElement
     {
         Player._instance.items.Remove(item);
 
-        Instantiate(StaticValues._instance.bundlePrefab, Player._instance.transform.position, StaticValues._instance.bundlePrefab.transform.rotation, StaticValues._instance.bundlesTransform);
+        Instantiate(StaticValues._instance.bundlePrefab, Player._instance.transform.position, StaticValues._instance.bundlePrefab.transform.rotation);
     }
 
     void SelectingObjects()

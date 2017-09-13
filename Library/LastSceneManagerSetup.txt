@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/scenes/town/saloonKitchen.unity
+- path: Assets/scenes/town.unity
   isLoaded: 1
   isActive: 1

@@ -17,6 +17,15 @@ public class ShootingController : MonoBehaviour
     Player shootingPlayer;
     public InteractableObject shootingEnemy;
 
+    public GameObject[] thingsToTurnOff;
+
+    void Update()
+    {
+        if (Player._instance.isBusy)
+            foreach (GameObject go in thingsToTurnOff)
+                go.SetActive(false);
+    }
+
     public void StartShooting(InteractableObject enemy)
     {
         Player._instance.PrepareToShootout();
@@ -83,6 +92,9 @@ public class ShootingController : MonoBehaviour
 
     public void ShootoutOver(GameObject haHaLooser)
     {
+        foreach (GameObject go in thingsToTurnOff)
+            go.SetActive(true);
+
         foreach (Transform square in squareSpawn)
             Destroy(square.gameObject);
         

@@ -30,8 +30,8 @@ public class Door : InteractableObject
         //    notInteractable = true;
     }
 
-    public override void Death()
+    new public void Death()
     {
-        
+
     }
 }

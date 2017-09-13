@@ -27,6 +27,8 @@ public class Player : Person
     public EquipmentController equipmentController;
     public TravellingController travellingController;
 
+    public GameObject heartPrefab;
+    public Transform hpHeartsSpawn;
     public GameObject UIkeys;
     public GameObject[] interactables;
     public float radius;
@@ -46,6 +48,9 @@ public class Player : Person
     List<GameObject> nearbyObjects = new List<GameObject>();
     Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
 
+    // TODO: napisac funkcje "checkHP"
+
+
     void Awake()
     {
         if (Player._instance == null)
@@ -60,10 +65,7 @@ public class Player : Person
         rb = GetComponent<Rigidbody2D>();
         DontDestroyOnLoad(this);
 
-        for (int i = 0; i < hp; i++)
-        {
-            heartsSpawn.GetChild(i).gameObject.SetActive(true);
-        }
+        CheckHP();
 
         for (int i = 0; i < feed; i++)
         {
@@ -214,7 +216,29 @@ public class Player : Person
 
     public void PrepareToShootout()
     {
+        for (int i = 0; i < hp; i++)
+        {
+            Vector2 pos = new Vector2(
+                i * (heartPrefab.GetComponent<RectTransform>().sizeDelta.y + 0),
+                0
+            );
+
+            GameObject heart = Instantiate(heartPrefab, heartsSpawn) as GameObject;
+
+            heart.transform.localScale = new Vector3(1, 1, 1);
+
+            heart.transform.localPosition = pos;
+        }
+
         isBusy = true;
+    }
+
+    public void ShootoutOver()
+    {
+        isBusy = false;
+
+        foreach (Transform heart in heartsSpawn)
+            Destroy(heart.gameObject);
     }
 
     void LookingForTheNearestInteractiveObject()
@@ -282,14 +306,6 @@ public class Player : Person
         nearbyObjects.Clear();
     }
 
-    public void ShootoutOver()
-    {
-        isBusy = false;
-
-        foreach (Transform heart in heartsSpawn)
-            Destroy(heart.gameObject);
-    }
-
     public void DamageTaken()
     {
         heartsSpawn.GetChild(hp - 1).gameObject.SetActive(false);
@@ -305,6 +321,21 @@ public class Player : Person
     {
         if (shootingEnded != null)
             shootingEnded(winner, looser, playersGun);
+
+        CheckHP();
+    }
+
+    void CheckHP()
+    {
+        for (int i = 0; i < hp; i++)
+        {
+            hpHeartsSpawn.GetChild(i).gameObject.SetActive(true);
+        }
+
+        for (int i = hp; i < hpHeartsSpawn.childCount; i++)
+        {
+            hpHeartsSpawn.GetChild(i).gameObject.SetActive(false);
+        }
     }
 
     public void EndOfTrade(Person trader, List<Item> boughtItems, int spentMoney)
