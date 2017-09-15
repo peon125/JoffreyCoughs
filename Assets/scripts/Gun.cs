@@ -10,7 +10,8 @@ public class Gun : Item
     public override void Use()
     { 
         Player._instance.items.Remove(this);
-        Player._instance.items.Add(Player._instance.gun);
+        if (Player._instance.gun != null)
+            Player._instance.items.Add(Player._instance.gun);
         Player._instance.gun = this;
     }
 }

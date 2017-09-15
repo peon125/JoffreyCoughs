@@ -25,7 +25,7 @@ public class Person : InteractableObject
     protected bool doMove = true;
     protected GameObject mark;
 
-    void Start() 
+    protected void Start() 
     {
         _moveSpriteSpeed = moveSpriteSpeed;
         startPos = transform.localPosition;

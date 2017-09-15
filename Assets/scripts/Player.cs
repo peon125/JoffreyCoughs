@@ -8,6 +8,7 @@ public delegate void TradeEnded(InteractableObject trader, List<Item> boughtItem
 public delegate void InspectionEnded(InteractableObject inspected);
 public delegate void TalkEnded(InteractableObject speaker);
 public delegate void ItemUsed(Item item);
+public delegate void Travelled(string from, string to);
 
 public class Player : Person 
 {
@@ -18,6 +19,7 @@ public class Player : Person
     public event InspectionEnded inspectionEnded;
     public event TalkEnded talkEnded;
     public event ItemUsed itemUsed;
+    public event Travelled travelled;
 
     public TradingController tradingController;
     public InspectingController inspectingController;
@@ -30,7 +32,7 @@ public class Player : Person
     public GameObject heartPrefab;
     public Transform hpHeartsSpawn;
     public GameObject UIkeys;
-    public GameObject[] interactables;
+    public List<GameObject> interactables;
     public float radius;
     public InteractableObject target;
     public int maxHp;
@@ -46,10 +48,6 @@ public class Player : Person
     public AreaHandler areaICurrentlyAm;
 
     List<GameObject> nearbyObjects = new List<GameObject>();
-    Vector2 startPosDrag, currentPosDrag, outcomePosDrag;
-
-    // TODO: napisac funkcje "checkHP"
-
 
     void Awake()
     {
@@ -115,7 +113,7 @@ public class Player : Person
                     target.Interact();
             }
 
-            if(Input.GetButtonDown("Equipment"))
+            if (Input.GetButtonDown("Equipment"))
                 equipmentController.StartEquiping();
 
             if (Input.GetButtonDown("QuestLog"))
@@ -266,8 +264,7 @@ public class Player : Person
                     Vector3 targetPosition;
 
                     targetPosition = new Vector3(nearbyObjects[i].transform.position.x, nearbyObjects[i].transform.position.y, 0);
-
-
+                    
                     if (Vector3.Distance(targetPosition, playerPostion) < Vector3.Distance(nearestObjectPositon, playerPostion))
                         nearest = nearbyObjects[i];
                 }
@@ -342,6 +339,8 @@ public class Player : Person
     {
         if (tradeEnded != null)
             tradeEnded(trader, boughtItems, spentMoney);
+
+        Debug.Log(trader + ", " + boughtItems + ", " + spentMoney);
     }
 
     public void EndOfInspection(Person inspected)
@@ -354,6 +353,12 @@ public class Player : Person
     {
         if (talkEnded != null)
             talkEnded(speaker);
+    }
+
+    public void EndOfTravel(string from, string to)
+    {
+        if (travelled != null)
+            travelled(from, to);
     }
 
     public void Death()

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class TradingController : UiElement 
+public class TradingController : UiElement
 {
     public GameObject itemListElementPrefab;
     public Image spriteRenderer;
@@ -12,6 +12,8 @@ public class TradingController : UiElement
     Item selectedTradersItem, selectedPlayersItem;
     int left = 0, right = 0, leftShift = 0, rightShift = 0;
     bool leftVerticalAxisInUse = false, rightVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightHorizontalAxisInUse = false;
+    List<Item> boughtItems = new List<Item>();
+    int moneySpent = 0;
 
     public Transform tradersList, playersList, tradersStats, playersStats;
 
@@ -33,6 +35,7 @@ public class TradingController : UiElement
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Trade"))
             {
                 StartCoroutine(CloseDialogue(stuff[1].transform));
+                Player._instance.EndOfTrade(target.GetComponent<Person>(), boughtItems, moneySpent);
             }
         }
 
@@ -42,11 +45,11 @@ public class TradingController : UiElement
 
     void SelectingObjects()
     {
-        if (Input.GetAxisRaw("Horizontal1") != 0)
+        if (Input.GetAxisRaw("Horizontal2") != 0)
         {
             if (!leftHorizontalAxisInUse)
             {
-                if (Input.GetAxisRaw("Horizontal1") > 0)
+                if (Input.GetAxisRaw("Horizontal2") < 0)
                 {
                     Trade(target, Player._instance, left, leftShift, target.sellingPriceModifier, Player._instance.buyingPriceModifier);
                     //BuyItem();
@@ -57,18 +60,18 @@ public class TradingController : UiElement
         }
         else
             leftHorizontalAxisInUse = false;
-        
-        if (Input.GetAxisRaw("Vertical1") != 0)
+
+        if (Input.GetAxisRaw("Vertical2") != 0)
         {
             if (!leftVerticalAxisInUse)
             {
-                if (Input.GetAxisRaw("Vertical1") > 0)
+                if (Input.GetAxisRaw("Vertical2") > 0)
                 {
                     left--;
 
                     ScrollAList(tradersList, target.items.ToArray(), ref left, 1, ref leftShift);
                 }
-                else if (Input.GetAxisRaw("Vertical1") < 0)
+                else if (Input.GetAxisRaw("Vertical2") < 0)
                 {
                     left++;
 
@@ -82,11 +85,11 @@ public class TradingController : UiElement
             leftVerticalAxisInUse = false;
 
 
-        if (Input.GetAxisRaw("Horizontal2") != 0)
+        if (Input.GetAxisRaw("Horizontal1") != 0)
         {
             if (!rightHorizontalAxisInUse)
             {
-                if (Input.GetAxisRaw("Horizontal2") < 0)
+                if (Input.GetAxisRaw("Horizontal1") > 0)
                 {
                     Trade(Player._instance, target, right, rightShift, Player._instance.sellingPriceModifier, target.buyingPriceModifier);
                     //SellItem();
@@ -98,17 +101,17 @@ public class TradingController : UiElement
         else
             rightHorizontalAxisInUse = false;
 
-        if (Input.GetAxisRaw("Vertical2") != 0)
+        if (Input.GetAxisRaw("Vertical1") != 0)
         {
             if (!rightVerticalAxisInUse)
             {
-                if (Input.GetAxisRaw("Vertical2") > 0)
+                if (Input.GetAxisRaw("Vertical1") > 0)
                 {
                     right--;
 
                     ScrollAList(playersList, Player._instance.items.ToArray(), ref right, 1, ref rightShift);
                 }
-                else if (Input.GetAxisRaw("Vertical2") < 0)
+                else if (Input.GetAxisRaw("Vertical1") < 0)
                 {
                     right++;
 
@@ -171,6 +174,9 @@ public class TradingController : UiElement
         target = Player._instance.target;
         spriteRenderer.sprite = target.speakerSprite;
 
+        boughtItems.Clear();
+        moneySpent = 0;
+
         ShowItems();
     }
 
@@ -183,25 +189,25 @@ public class TradingController : UiElement
 
         tradersItemCounter.text = (left + 1).ToString() + "/" + target.items.Count.ToString();
 
-        if (target.items.Count != 0)    
+        if (target.items.Count != 0)
             ViewStats(
                 target.items[left],
-                tradersStats, 
-                target.items[left].namesOfStats, 
+                tradersStats,
+                target.items[left].namesOfStats,
                 target.items[left].stats,
-                target.items[left].slot, 
-                target.items[left].value, 
+                target.items[left].slot,
+                target.items[left].value,
                 target.sellingPriceModifier,
                 Player._instance.buyingPriceModifier
             );
         else
             ViewStats(
                 null,
-                tradersStats, 
-                new string[0], 
+                tradersStats,
+                new string[0],
                 new float[0],
-                "----", 
-                0, 
+                "----",
+                0,
                 0,
                 0
             );
@@ -219,9 +225,9 @@ public class TradingController : UiElement
 
         if (Player._instance.items.Count != 0)
             ViewStats(
-                Player._instance.items[right], 
-                playersStats, 
-                Player._instance.items[right].namesOfStats, 
+                Player._instance.items[right],
+                playersStats,
+                Player._instance.items[right].namesOfStats,
                 Player._instance.items[right].stats,
                 Player._instance.items[right].slot,
                 Player._instance.items[right].value,
@@ -231,11 +237,11 @@ public class TradingController : UiElement
         else
             ViewStats(
                 null,
-                playersStats, 
-                new string[0], 
+                playersStats,
+                new string[0],
                 new float[0],
-                "----", 
-                0, 
+                "----",
+                0,
                 0,
                 0
             );
@@ -244,7 +250,7 @@ public class TradingController : UiElement
     }
 
     void ShowItems()
-    {       
+    {
         UnshowItems();
 
         for (int i = 0; i < tradersList.childCount && i < target.items.Count; i++)
@@ -310,10 +316,23 @@ public class TradingController : UiElement
         }
         else
             return;
+        
+        if (buyer == Player._instance)
+        {
+            boughtItems.Add(seller.items[sellerIterator]);
+            moneySpent += Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
+        }
+        else if (buyer == target)
+        {
+            boughtItems.Remove(seller.items[sellerIterator]);
+            moneySpent -= Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
+        }
 
         buyer.items.Add(seller.items[sellerIterator]);
         seller.items.Remove(seller.items[sellerIterator]);
 
+
         ShowItems();
     }
+
 }

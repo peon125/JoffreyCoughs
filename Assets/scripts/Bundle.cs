@@ -9,16 +9,7 @@ public class Bundle : InteractableObject
 
     void Start()
     {
-        GameObject[] array = new GameObject[Player._instance.interactables.Length + 1];
-
-        for (int i = 0; i < Player._instance.interactables.Length; i++)
-        {
-            array[i] = Player._instance.interactables[i];
-        }
-
-        array[Player._instance.interactables.Length] = gameObject;
-
-        Player._instance.interactables = array;
+        Player._instance.interactables.Add(gameObject);
 
         transform.localPosition += new Vector3(0, 0, 0.6f);
     }

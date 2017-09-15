@@ -24,9 +24,14 @@ public class AreaHandler : MonoBehaviour
             Player._instance.transform.localPosition = resps.GetChild(i).localPosition;
         }
 
+        Player._instance.EndOfTravel(Player._instance.travellingController.whereIComeFrom, areaName);
+
         Player._instance.areaICurrentlyAm = this;
 
-        Player._instance.interactables = GameObject.FindGameObjectsWithTag("interactable");
+        Player._instance.interactables.Clear();
+        GameObject[] array = GameObject.FindGameObjectsWithTag("interactable");
+        foreach (GameObject go in array)
+            Player._instance.interactables.Add(go);
 
         Player._instance.travellingController.whereIComeFrom = areaName;
     }

@@ -6,18 +6,25 @@ using UnityEngine;
 public class Door : InteractableObject
 {
     public Vector3 startPos, startScale, positionAfterOpen, scaleAfterOpen;
-    bool hasKeyInside = true;
+    public bool hasKeyInside;
 
     public override void Interact()
     {
         if (transform.localScale == startScale && !notInteractable)
         {
-            transform.localPosition = positionAfterOpen;
-            transform.localScale = scaleAfterOpen;
-            transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180 - transform.eulerAngles.y, transform.eulerAngles.z);
+            if (hasKeyInside)
+            {
+                transform.localPosition = positionAfterOpen;
+                transform.localScale = scaleAfterOpen;
+                transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180 - transform.eulerAngles.y, transform.eulerAngles.z);
+            } else
+            {
+                Player._instance.talkingController.StartTalking("*knock knoc* >>you need to insert the proper key<<");
+            }
         }
         else if (transform.localScale == scaleAfterOpen)
         {
+            hasKeyInside = true;
             transform.localPosition = startPos;
             transform.localScale = startScale;
             transform.eulerAngles = new Vector3(transform.eulerAngles.x, 180 - transform.eulerAngles.y, transform.eulerAngles.z);

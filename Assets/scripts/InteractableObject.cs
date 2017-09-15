@@ -5,6 +5,7 @@ using UnityEngine;
 public abstract class InteractableObject : MonoBehaviour
 {
     public List<Item> items;
+    public int  maxNumberOfItems;
     public Sprite speakerSprite;
     public string thingToSay;
     public float sellingPriceModifier, buyingPriceModifier;
@@ -17,8 +18,7 @@ public abstract class InteractableObject : MonoBehaviour
     public Transform heartsSpawn;
 
     public Gun gun;
-    public int hp, maxNumberOfItems;
-    public int howCloseINeedToApproach;
+    public int hp, howCloseINeedToApproach;
 
     public bool notInteractable;
 
@@ -35,7 +35,8 @@ public abstract class InteractableObject : MonoBehaviour
 
     public void LetsShoot()
     {
-        Player._instance.shootingController.StartShooting(this);
+        if (Player._instance.gun != null)
+            Player._instance.shootingController.StartShooting(this);
     }
 
     public void LetsTalk()
@@ -94,17 +95,21 @@ public abstract class InteractableObject : MonoBehaviour
 
     public void Death()
     {
-        if (items.Count > 0)
-        {
-            GameObject bundle = (GameObject)Instantiate(
+        GameObject bundle = (GameObject)Instantiate(
                 StaticValues._instance.bundlePrefab,
                 transform.position,
                 StaticValues._instance.bundlePrefab.transform.rotation
                 );
 
+        if (items.Count > 0)
+        {
             bundle.GetComponent<Bundle>().items = items;
         }
 
-        gameObject.SetActive(false);
+        bundle.GetComponent<Bundle>().items.Add(new Cash(cash));
+
+        Player._instance.interactables.Remove(gameObject);
+
+        Destroy(gameObject);
     }
 }

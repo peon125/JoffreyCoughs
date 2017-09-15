@@ -23,7 +23,7 @@ public class EquipmentController : UiElement
                 StartCoroutine(CloseDialogue(stuff[1].transform));
             }
 
-            if (Input.GetKeyDown(KeyCode.G))
+            if (Input.GetButtonDown("Interact"))
                 UseItem(Player._instance.items[left]);
         }
 

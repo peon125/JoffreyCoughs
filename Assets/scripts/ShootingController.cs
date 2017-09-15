@@ -33,7 +33,12 @@ public class ShootingController : MonoBehaviour
         shootingEnemy.PrepareToShootout();
         takenCordsX = new List<int>();
         takenCordsY = new List<int>();
-        howManySquaresToCreate = Player._instance.gun.hands;
+
+        //if (Player._instance.gun.hands == 2)
+            howManySquaresToCreate = 1;
+        //else
+        //    if (Player._instance.gun.hands == 1)
+        //    howManySquaresToCreate = 2;
 
         foreach (GameObject child in stuffToEnable)
             child.gameObject.SetActive(true);
