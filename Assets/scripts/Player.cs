@@ -2,9 +2,10 @@
 using System.Collections.Generic;
 using UnityEngine;
 using System;
+using UnityEngine.SceneManagement;
 
 public delegate void ShootingEnded(InteractableObject winner, InteractableObject looser, Gun playersGun);
-public delegate void TradeEnded(InteractableObject trader, List<Item> boughtItems, int spentMoney);
+public delegate void TradeEnded(InteractableObject trader, List<Item> boughtItems, List<Item> soldItems, int spentMoney);
 public delegate void InspectionEnded(InteractableObject inspected);
 public delegate void TalkEnded(InteractableObject speaker);
 public delegate void ItemUsed(Item item);
@@ -29,6 +30,7 @@ public class Player : Person
     public EquipmentController equipmentController;
     public TravellingController travellingController;
 
+    public AudioClip[] damageTakenSounds;
     public GameObject heartPrefab;
     public Transform hpHeartsSpawn;
     public GameObject UIkeys;
@@ -145,7 +147,7 @@ public class Player : Person
                 feedTransform.GetChild(feedTransform.childCount - 1).gameObject.SetActive(false);
             }
             else
-                GoToHospital();
+                GoToUndertaker("starvedToDeath");
         }
     }
 
@@ -184,9 +186,11 @@ public class Player : Person
         }
     }
 
-    void GoToHospital()
+    void GoToUndertaker(string s)
     {
-        Start();
+        hp = 10;
+        CheckHP();
+        SceneManager.LoadScene("undertakerInside");
     }
 
     void ChangeSprite()
@@ -272,20 +276,23 @@ public class Player : Person
 
             if (target != nearest.GetComponent<InteractableObject>() && target != null)
             {
-                target.GetComponent<SpriteRenderer>().color = Color.white;
+                target.SetColor(Color.white);
 
+                target.isNearToPlayer = false;
             }
 
             target = nearest.GetComponent<InteractableObject>();
-            //target.transform.position = new Vector3(
-            //    target.transform.position.x,
-            //    target.transform.position.y, 
-            //    0
-            //    );
+
+            target.isNearToPlayer = true;
+
             if (!target.GetComponent<InteractableObject>().notInteractable)
-                target.GetComponent<SpriteRenderer>().color = Color.green;
+            {
+                target.SetColor(Color.green);
+            }
             else
-                target.GetComponent<SpriteRenderer>().color = Color.red;
+            {
+                target.SetColor(Color.red);
+            }
 
             UIkeys.SetActive(true);
         }
@@ -293,7 +300,8 @@ public class Player : Person
         {
             if (target != null)
             {
-                target.GetComponent<SpriteRenderer>().color = Color.white;
+                target.SetColor(Color.white);
+                target.isNearToPlayer = false;
                 target = null;
 
                 UIkeys.SetActive(false);
@@ -303,23 +311,18 @@ public class Player : Person
         nearbyObjects.Clear();
     }
 
-    public void DamageTaken()
+    new public void DamageTaken()
     {
         heartsSpawn.GetChild(hp - 1).gameObject.SetActive(false);
         hp--;
 
+        AudioController._instance.soundSource.clip = damageTakenSounds[UnityEngine.Random.Range(0, damageTakenSounds.Length)];
+        AudioController._instance.soundSource.Play();
+
         if (hp <= 0)
         {
-            shootingController.ShootoutOver(gameObject);
+            shootingController.ShootoutOver(this);
         }
-    }
-
-    public void EndOfShooting(Person winner, Person looser, Gun playersGun)
-    {
-        if (shootingEnded != null)
-            shootingEnded(winner, looser, playersGun);
-
-        CheckHP();
     }
 
     void CheckHP()
@@ -335,12 +338,18 @@ public class Player : Person
         }
     }
 
-    public void EndOfTrade(Person trader, List<Item> boughtItems, int spentMoney)
+    public void EndOfShooting(InteractableObject winner, InteractableObject looser, Gun playersGun)
+    {
+        if (shootingEnded != null)
+            shootingEnded(winner, looser, playersGun);
+
+        CheckHP();
+    }
+
+    public void EndOfTrade(Person trader, List<Item> boughtItems, List<Item> soldItems, int spentMoney)
     {
         if (tradeEnded != null)
-            tradeEnded(trader, boughtItems, spentMoney);
-
-        Debug.Log(trader + ", " + boughtItems + ", " + spentMoney);
+            tradeEnded(trader, boughtItems, soldItems, spentMoney);
     }
 
     public void EndOfInspection(Person inspected)
@@ -361,8 +370,8 @@ public class Player : Person
             travelled(from, to);
     }
 
-    public void Death()
+    public override void Death()
     {
-        GoToHospital();
+        GoToUndertaker("killedToDeath");
     }
 }

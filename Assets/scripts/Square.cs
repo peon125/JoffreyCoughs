@@ -51,7 +51,14 @@ public class Square : MonoBehaviour
         float chance = Random.Range(0f, 1f);
 
         if (chance > Player._instance.gun.accuracy)
+        {
+            AudioController._instance.soundSource.clip = Player._instance.shootingController.shotMissedSound;
+            AudioController._instance.soundSource.Play();
             return;
+        }
+
+        AudioController._instance.soundSource.clip = Player._instance.gun.shotSound;
+        AudioController._instance.soundSource.Play();
 
         hp -= damage;
 

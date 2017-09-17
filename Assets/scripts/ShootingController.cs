@@ -5,6 +5,7 @@ using UnityEngine;
 public class ShootingController : MonoBehaviour
 {
     public List<KeyCode> takenKeys = new List<KeyCode>();
+    public AudioClip shotMissedSound;
     public GameObject squarePrefab;
     public Transform squareSpawn;
     public int[] cordsX;
@@ -95,26 +96,38 @@ public class ShootingController : MonoBehaviour
         Player._instance.DamageTaken();
     }
 
-    public void ShootoutOver(GameObject haHaLooser)
+    public void ShootoutOver(InteractableObject haHaLooser)
     {
-        foreach (GameObject go in thingsToTurnOff)
-            go.SetActive(true);
-
-        foreach (Transform square in squareSpawn)
-            Destroy(square.gameObject);
-        
-        foreach (GameObject child in stuffToEnable)
-            child.gameObject.SetActive(false);
+        DeleteSquares();
 
         shootingEnemy.ShootoutOver();
 
         Player._instance.ShootoutOver();
 
-        haHaLooser.GetComponent<InteractableObject>().Death();
+        InteractableObject winner = null;
 
-//        if (haHaLooser == shootingEnemy)
-//            Destroy(haHaLooser);
-//        else
-//            Debug.Log("przypal xD");
+        if (haHaLooser == Player._instance)
+            winner = Player._instance.target;
+        else
+            winner = Player._instance;
+
+        Player._instance.EndOfShooting(winner, haHaLooser, Player._instance.gun);
+
+        //if (haHaLooser.GetComponent<Player>())
+        //    haHaLooser.GetComponent<Player>().Death();
+        //else
+        haHaLooser.GetComponent<InteractableObject>().Death();
+    }
+
+    public void DeleteSquares()
+    {
+        foreach (GameObject go in thingsToTurnOff)
+            go.SetActive(true);
+
+        foreach (GameObject child in stuffToEnable)
+            child.gameObject.SetActive(false);
+
+        foreach (Transform square in squareSpawn)
+            Destroy(square.gameObject);
     }
 }

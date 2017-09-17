@@ -27,9 +27,15 @@ public class Person : InteractableObject
 
     protected void Start() 
     {
+        base.Start();
         _moveSpriteSpeed = moveSpriteSpeed;
         startPos = transform.localPosition;
         rb = GetComponent<Rigidbody2D>();
+    }
+
+    protected void Update()
+    {
+        base.Update();
     }
 
     protected void ChasingThePlayer()

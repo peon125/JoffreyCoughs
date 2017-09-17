@@ -7,6 +7,10 @@ public class StaticValues : MonoBehaviour
     public static StaticValues _instance;
     public GameObject bundlePrefab;
     public GameObject enemyHeartPrefab;
+    public AudioClip doorOpeningSound;
+    public AudioClip doorClosingSound;
+    public AudioClip doorKnockingSound;
+    public AudioClip barrelKnockingSound;
 
     void Awake()
     {

@@ -46,11 +46,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\FirstFightTutorial.cs" />
      <Compile Include="Assets\scripts\AreaHandler.cs" />
+     <Compile Include="Assets\scripts\AudioController.cs" />
      <Compile Include="Assets\scripts\Bundle.cs" />
      <Compile Include="Assets\scripts\CameraWorldMovement.cs" />
      <Compile Include="Assets\scripts\Cash.cs" />
+     <Compile Include="Assets\scripts\Container.cs" />
      <Compile Include="Assets\scripts\Counter.cs" />
      <Compile Include="Assets\scripts\Door.cs" />
      <Compile Include="Assets\scripts\EquipmentController.cs" />
@@ -58,6 +59,7 @@
      <Compile Include="Assets\scripts\GameController.cs" />
      <Compile Include="Assets\scripts\Gun.cs" />
      <Compile Include="Assets\scripts\Gunman.cs" />
+     <Compile Include="Assets\scripts\Guy.cs" />
      <Compile Include="Assets\scripts\InspectingController.cs" />
      <Compile Include="Assets\scripts\InteractableObject.cs" />
      <Compile Include="Assets\scripts\Item.cs" />
@@ -77,10 +79,16 @@
      <Compile Include="Assets\scripts\TravellingPortal.cs" />
      <Compile Include="Assets\scripts\UiElement.cs" />
      <Compile Include="Assets\scripts\Vendor.cs" />
+     <Compile Include="Assets\scripts\people\Sheriff.cs" />
+     <Compile Include="Assets\scripts\quests\GiveMeMyDrink.cs" />
+     <Compile Include="Assets\scripts\quests\KillAVillain.cs" />
      <Compile Include="Assets\scripts\quests\Quest.cs" />
      <Compile Include="Assets\scripts\quests\QuestsController.cs" />
      <Compile Include="Assets\scripts\quests\TalkToAStranger.cs" />
+     <Compile Include="Assets\scripts\tutorial\FirstFightTutorial.cs" />
      <Compile Include="Assets\scripts\tutorial\FirstGunBoughtTutorial.cs" />
+     <Compile Include="Assets\scripts\tutorial\GetQuestTutorial.cs" />
+     <Compile Include="Assets\scripts\tutorial\ReturnTheQuestTutorial.cs" />
      <Compile Include="Assets\scripts\tutorial\ShopVisitedTutorial.cs" />
      <Compile Include="Assets\scripts\tutorial\Tutorial.cs" />
      <Compile Include="Assets\scripts\tutorial\TutorialController.cs" />

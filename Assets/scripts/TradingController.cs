@@ -12,7 +12,7 @@ public class TradingController : UiElement
     Item selectedTradersItem, selectedPlayersItem;
     int left = 0, right = 0, leftShift = 0, rightShift = 0;
     bool leftVerticalAxisInUse = false, rightVerticalAxisInUse = false, leftHorizontalAxisInUse = false, rightHorizontalAxisInUse = false;
-    List<Item> boughtItems = new List<Item>();
+    List<Item> boughtItems = new List<Item>(), soldItems = new List<Item>();
     int moneySpent = 0;
 
     public Transform tradersList, playersList, tradersStats, playersStats;
@@ -35,7 +35,7 @@ public class TradingController : UiElement
             if (Input.GetButtonDown("Cancel") || Input.GetButtonDown("Trade"))
             {
                 StartCoroutine(CloseDialogue(stuff[1].transform));
-                Player._instance.EndOfTrade(target.GetComponent<Person>(), boughtItems, moneySpent);
+                Player._instance.EndOfTrade(target.GetComponent<Person>(), boughtItems, soldItems, moneySpent);
             }
         }
 
@@ -320,11 +320,14 @@ public class TradingController : UiElement
         if (buyer == Player._instance)
         {
             boughtItems.Add(seller.items[sellerIterator]);
+            if (soldItems.Contains(seller.items[sellerIterator]))
+                soldItems.Remove(seller.items[sellerIterator]);
             moneySpent += Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
         }
         else if (buyer == target)
         {
             boughtItems.Remove(seller.items[sellerIterator]);
+            soldItems.Add(seller.items[sellerIterator]);
             moneySpent -= Mathf.FloorToInt(seller.items[sellerIterator].value * sellerModifier * buyerModifier);
         }
 

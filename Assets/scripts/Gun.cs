@@ -6,6 +6,7 @@ public class Gun : Item
 {
     public int hands, damage;
     public float speed, accuracy;
+    public AudioClip shotSound;
 
     public override void Use()
     { 

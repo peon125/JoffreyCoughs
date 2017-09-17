@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 public abstract class InteractableObject : MonoBehaviour
 {
@@ -14,13 +15,51 @@ public abstract class InteractableObject : MonoBehaviour
     public string _name, description;
     public bool randomizeAfterSleep;
     public int cash;
-    //public GameObject heartPrefab;
     public Transform heartsSpawn;
 
     public Gun gun;
     public int hp, howCloseINeedToApproach;
+    public bool isNearToPlayer;
+    public Color currentColor = Color.white;
 
     public bool notInteractable;
+
+    protected bool doGlow = false;
+    protected Color glowingColor;
+    protected float glowingSpeed;
+
+    protected void Start()
+    {
+        Quest myQuest = Player._instance.questsController.FindMyQuest(this);
+
+        if (myQuest != null)
+        {
+            if (!myQuest.onQuest)
+                Glowing(true, Color.yellow, 0.75f);
+            else if (myQuest.onQuest && myQuest.allObjectives == myQuest.completedObjectives)
+                Glowing(true, Color.cyan, 0.75f);
+        }
+    }
+
+    protected void Update()
+    {
+        if (doGlow)
+        {
+            GetComponent<SpriteRenderer>().color = Color.Lerp(glowingColor, currentColor, Mathf.PingPong(Time.time / glowingSpeed, 1));
+        }
+    }
+
+    public void Glowing(bool b)
+    {
+        doGlow = b;
+    }
+
+    public void Glowing(bool b, Color c, float f)
+    {
+        doGlow = b;
+        glowingColor = c;
+        glowingSpeed = f;
+    }
 
     public void DamageTaken()
     {
@@ -29,7 +68,7 @@ public abstract class InteractableObject : MonoBehaviour
 
         if (hp <= 0)
         {
-            Player._instance.shootingController.ShootoutOver(gameObject);
+            Player._instance.shootingController.ShootoutOver(this);
         }
     }
 
@@ -93,7 +132,27 @@ public abstract class InteractableObject : MonoBehaviour
 
     public abstract void Interact();
 
-    public void Death()
+    //public void Death()
+    //{
+    //    GameObject bundle = (GameObject)Instantiate(
+    //            StaticValues._instance.bundlePrefab,
+    //            transform.position,
+    //            StaticValues._instance.bundlePrefab.transform.rotation
+    //            );
+
+    //    if (items.Count > 0)
+    //    {
+    //        bundle.GetComponent<Bundle>().items = items;
+    //    }
+
+    //    bundle.GetComponent<Bundle>().items.Add(new Cash(cash));
+
+    //    Player._instance.interactables.Remove(gameObject);
+
+    //    Destroy(gameObject);
+    //}
+
+    public virtual void Death()
     {
         GameObject bundle = (GameObject)Instantiate(
                 StaticValues._instance.bundlePrefab,
@@ -111,5 +170,13 @@ public abstract class InteractableObject : MonoBehaviour
         Player._instance.interactables.Remove(gameObject);
 
         Destroy(gameObject);
+    }
+
+    public void SetColor(Color c)
+    {
+        if (doGlow)
+            currentColor = c;
+        else
+            GetComponent<SpriteRenderer>().color = c;
     }
 }

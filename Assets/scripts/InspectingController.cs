@@ -24,7 +24,7 @@ public class InspectingController : UiElement
         target = Player._instance.target;
         sprite.sprite = target.speakerSprite;
 
-        //ShowItems();
+        ShowItems();
     }
 
     void ShowItems()

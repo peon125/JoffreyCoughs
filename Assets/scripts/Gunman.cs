@@ -24,7 +24,7 @@ public class Gunman : Person
         else
             rb.velocity = Vector2.zero;
         
-        if (isBusy)
+        if (Player._instance.isBusy)
         {
             rb.velocity = Vector3.zero;
         }
@@ -32,7 +32,6 @@ public class Gunman : Person
         transform.localPosition = new Vector3(
             transform.localPosition.x,
             transform.localPosition.y,
-            //transform.position.y / 10000
             transform.localPosition.y 
         );
     }

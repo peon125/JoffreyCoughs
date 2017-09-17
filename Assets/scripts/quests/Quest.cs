@@ -4,9 +4,9 @@ using UnityEngine;
 
 public abstract class Quest : MonoBehaviour 
 {
-    public Person questGiver;
-    public Person questReceiver;
-    public Person[] peopleRelated;
+    public string questGiver;
+    public string questReceiver;
+    public string[] peopleRelated;
     public string questName, rewardName;
     public int allObjectives;
     public int completedObjectives;
@@ -30,5 +30,18 @@ public abstract class Quest : MonoBehaviour
 
     public abstract int CheckOnQuest(InteractableObject person);
 
-    public abstract void Reacted(int i);
+    public abstract bool Reacted(int i);
+
+    public abstract void QuestCompleted();
+
+    protected void ObjectiveCompleted()
+    {
+        completedObjectives++;
+        Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);
+
+        Player._instance.questsController.UpdateTracker();
+
+        if (completedObjectives == allObjectives)
+            QuestCompleted();
+    }
 }

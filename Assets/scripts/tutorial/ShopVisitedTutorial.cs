@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class ShopVisitedTutorial : Tutorial
 {
-    void Start()
+    public override void StartFollowing()
     {
         Player._instance.travelled += CheckIfRunTutorial;
     }
@@ -15,8 +15,15 @@ public class ShopVisitedTutorial : Tutorial
         {
             GetComponent<TutorialController>().RunTutorial(tutorialText);
 
+            TriggerNextTutorial();
+
             Player._instance.travelled -= CheckIfRunTutorial;
             Destroy(this);
         }
+    }
+
+    public override void TriggerNextTutorial()
+    {
+        GetComponent<FirstGunBoughtTutorial>().StartFollowing();
     }
 }

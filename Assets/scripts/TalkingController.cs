@@ -86,24 +86,82 @@ public class TalkingController : UiElement
 
     void KeyHandling()
     {
+        //if (opened && way == 0)
+        //{
+        //    if (Input.anyKeyDown && !reactNow)
+        //    {
+        //        if (!doSpeak && restOfQuestion != "")
+        //        {
+        //            Say(restOfQuestion);
+        //        }
+        //        else if (doSpeak && restOfQuestion == "") /////
+        //        {
+        //            Say(restOfQuestion);
+        //            Player._instance.EndOfTalk(target);
+
+        //            StartCoroutine(CloseDialogue(""));
+        //            return;
+        //        }
+        //        else if (!doSpeak && restOfQuestion == "")
+        //        {
+        //            if (questBeingTalkedAbout != null && questBeingTalkedAbout.reactionRequired)
+        //            {
+        //                StartReacting();
+        //                return;
+        //            }
+
+        //        }
+
+        //        if (doSpeak)
+        //        {
+        //            if (question.Length >= limit)
+        //                text.text = question.Substring(0, limit);
+        //            else
+        //                text.text = question;
+        //            doSpeak = false;
+        //            return;
+        //        }
+        //    }
+        //    else
+
+        //    if (reactNow)
+        //    {
+        //        React();
+        //    }
+        //}
+
+        //Debug.Log("czy mowi: " + doSpeak + " " + "czy zapytanie: " + restOfQuestion == "");
+
         if (opened && way == 0)
         {
             if (Input.anyKeyDown && !reactNow)
             {
-                if (!doSpeak && restOfQuestion == "") /////
+                if (!doSpeak && restOfQuestion != "")
                 {
-                    
                     Say(restOfQuestion);
-                        Player._instance.EndOfTalk(target);
-
-                        StartCoroutine(CloseDialogue(""));
+                }
+                else if (doSpeak && restOfQuestion == "") /////
+                {
+                    if (question.Length >= limit)
+                        text.text = question.Substring(0, limit);
+                    else
+                        text.text = question;
+                    doSpeak = false;
                     return;
                 }
-                else if (!doSpeak && restOfQuestion != "")
+                else if (!doSpeak && restOfQuestion == "")
                 {
                     if (questBeingTalkedAbout != null && questBeingTalkedAbout.reactionRequired)
                     {
                         StartReacting();
+                        return;
+                    }
+                    else
+                    {
+                        Say(restOfQuestion);
+                        Player._instance.EndOfTalk(target);
+
+                        StartCoroutine(CloseDialogue(""));
                         return;
                     }
                 }
@@ -117,7 +175,8 @@ public class TalkingController : UiElement
                     doSpeak = false;
                     return;
                 }
-            } else
+            }
+            else
 
             if (reactNow)
             {
@@ -139,9 +198,9 @@ public class TalkingController : UiElement
 
         if (question.Length > limit)
         {
-            restOfQuestion = question.Substring(limit);
+            restOfQuestion = "..." + question.Substring(limit - 3);
 
-            question = question.Substring(0, limit);
+            question = question.Substring(0, limit) + "...";
         }
         else
             restOfQuestion = "";
@@ -198,15 +257,16 @@ public class TalkingController : UiElement
 
         if(Input.GetButtonDown("Submit"))
         {
-            questBeingTalkedAbout.Reacted(reactionsIterator + reactionsIteratorShift);
+            if(questBeingTalkedAbout.Reacted(reactionsIterator + reactionsIteratorShift))
+                Player._instance.target.Glowing(false);
+            else
+                Player._instance.target.Glowing(true, Color.yellow, 0.75f);
 
             reactNow = false;
 
             Player._instance.EndOfTalk(target);
 
             StartCoroutine(CloseDialogue(""));
-
-            Debug.Log("dab on them haters!!!");
         }
 
 

@@ -6,8 +6,8 @@ public class AreaHandler : MonoBehaviour
 {
     public static AreaHandler areaWhereICurrentlyAm;
     public string areaName;
-    public Transform portals;
     public Transform resps;
+    public AudioClip soundtrack;
 
     void Start()
     {
@@ -19,6 +19,15 @@ public class AreaHandler : MonoBehaviour
             {
                 if (resps.GetChild(i).name == Player._instance.travellingController.whereIComeFrom + "Resp")
                     break;
+            }
+
+            if(i >= resps.childCount)
+            {
+                for (i = 0; i < resps.childCount; i++)
+                {
+                    if (resps.GetChild(i).name == "defaultResp")
+                        break;
+                }
             }
 
             Player._instance.transform.localPosition = resps.GetChild(i).localPosition;
@@ -34,5 +43,9 @@ public class AreaHandler : MonoBehaviour
             Player._instance.interactables.Add(go);
 
         Player._instance.travellingController.whereIComeFrom = areaName;
+
+        if (soundtrack != null)
+            AudioController._instance.PlaySoundtrack(
+                soundtrack);
     }
 }

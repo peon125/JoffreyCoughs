@@ -1,15 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class FirstGunBoughtTutorial : Tutorial
 {
-    void Start()
-    {
-        Player._instance.tradeEnded += CheckIfRunTutorial;
-    }
-
-    protected void CheckIfRunTutorial(InteractableObject trader, List<Item> boughtItems, int spentMoney)
+    protected void CheckIfRunTutorial(InteractableObject trader, List<Item> boughtItems, List<Item> soldItems, int spentMoney)
     {
         foreach(Item item in boughtItems)
         {
@@ -17,10 +13,22 @@ public class FirstGunBoughtTutorial : Tutorial
             {
                 GetComponent<TutorialController>().RunTutorial(tutorialText);
 
+                TriggerNextTutorial();
+
                 Player._instance.tradeEnded -= CheckIfRunTutorial;
                 Destroy(this);
                 break;
             }
         }
+    }
+
+    public override void StartFollowing()
+    {
+        Player._instance.tradeEnded += CheckIfRunTutorial;
+    }
+
+    public override void TriggerNextTutorial()
+    {
+        GetComponent<FirstFightTutorial>().StartFollowing();
     }
 }

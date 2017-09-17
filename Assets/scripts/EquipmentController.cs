@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class EquipmentController : UiElement
 {
     public Transform itemsList, statsList;
-    public Text itemCounter, itemName;
+    public Text itemCounter, itemName, cashText, gunEquipped;
     int left = 0, leftShift = 0;
     bool leftVerticalAxisInUse = false;
 
@@ -27,7 +27,7 @@ public class EquipmentController : UiElement
                 UseItem(Player._instance.items[left]);
         }
 
-        if (opened)
+        if (opened && Player._instance.items.Count >0)
             SelectingObjects();
     }
 
@@ -42,6 +42,9 @@ public class EquipmentController : UiElement
     {
         UnshowItems();
 
+        if (Player._instance.items.Count <= 0)
+            return;
+
         for (int i = 0; i < itemsList.childCount && i < Player._instance.items.Count; i++)
         {
             itemsList.GetChild(i).GetComponent<Text>().text = Player._instance.items[i].itemName;
@@ -53,6 +56,13 @@ public class EquipmentController : UiElement
         {
             itemsList.GetChild(i).GetComponent<Text>().text = "---";
         }
+
+        cashText.text = Player._instance.cash.ToString();
+
+        if (Player._instance.gun)
+            gunEquipped.text = Player._instance.gun.itemName;
+        else
+            gunEquipped.text = "---";
 
         leftShift = 0;
         left = 0;

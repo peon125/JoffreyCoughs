@@ -13,8 +13,6 @@ public class Food : Item
             Player._instance.hp++;
         }
 
-        Debug.Log(name);
-
         Player._instance.items.Remove(this);
     }
 }

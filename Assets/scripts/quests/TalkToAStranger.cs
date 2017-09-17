@@ -50,20 +50,24 @@ public class TalkToAStranger : Quest
         return 999;
     }
 
-    public override void Reacted(int reaction)
+    public override bool Reacted(int reaction)
     {
+        reactionRequired = false;
+
         if (reaction == 0)
         {
             ActivateTheQuest();
             Player._instance.talkEnded += CheckIfObjectiveIsCompleted;
             questTrackContent = whatToPutIntoQuestTrack[0];
+
+            return true;
         }
         else if (reaction == 1)
         {
             questStadium = 0;
         }
 
-        reactionRequired = false;
+        return false;
     }
 
     void CheckIfObjectiveIsCompleted(InteractableObject speaker)
@@ -72,15 +76,7 @@ public class TalkToAStranger : Quest
             ObjectiveCompleted();
     }
 
-    void ObjectiveCompleted()
-    {
-        completedObjectives++;
-
-        if (completedObjectives == allObjectives)
-            QuestCompleted();
-    }
-
-    void QuestCompleted()
+    public override void QuestCompleted()
     {
         Player._instance.talkEnded -= CheckIfObjectiveIsCompleted;
         Player._instance.questsController.questLogUpdatedInformer.QuestLogUpdated(questName);

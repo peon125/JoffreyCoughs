@@ -9,6 +9,11 @@ public class TutorialController : MonoBehaviour
     public Text tutorialText;
     bool tutorialOpened;
 
+    void Start()
+    {
+        GetComponent<GetQuestTutorial>().StartFollowing();
+    }
+
     void Update()
     {
         if(tutorialOpened)
@@ -22,7 +27,6 @@ public class TutorialController : MonoBehaviour
 
     public void RunTutorial(string s)
     {
-
         tutorialText.text = s;
 
         board.SetActive(true);
